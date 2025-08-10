@@ -41,10 +41,17 @@ namespace eagletechapi.services
                 });
             }
 
-        
             chatbotContent.parts.Add(chatbotPart);
             chatbotIn.contents.Add(chatbotContent);
 
+            if (Chatbot.Conversation.Count > 1 && chatbotPart.text.ToLower().Equals("sim"))
+            {
+                //TODO: FECHAR CHAMADO
+            } 
+            else 
+            {
+                //TODO: ABRIR CHAMADO
+            }
         
             var response = await _http.Enviar(
                 "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",

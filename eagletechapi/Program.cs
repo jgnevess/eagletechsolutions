@@ -18,7 +18,20 @@ builder.Services
 builder.Services.AddSingleton<ClientHttp>();
 builder.Services.AddScoped<ChatbotService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
+app.UseCors("AllowFrontend");
 
 
 if (app.Environment.IsDevelopment())
@@ -26,6 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 
