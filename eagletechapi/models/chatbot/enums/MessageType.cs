@@ -4,6 +4,7 @@ namespace eagletechapi.models
     {
         SENT,
         RECEIVED,
+        SOLVED,
         NULL
     }
 }

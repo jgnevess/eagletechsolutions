@@ -1,81 +1,155 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using eagletechapi.Contexts;
 using eagletechapi.http;
 using eagletechapi.models;
+using eagletechapi.models.chamado;
+using Microsoft.EntityFrameworkCore;
 
 namespace eagletechapi.services
 {
     public class ChatbotService
     {
         private readonly string API_KEY;
-
-
+        private readonly string API_URL;
         private readonly ClientHttp _http;
+        private readonly AppDbContext __context;
 
-        public ChatbotService(ClientHttp clientHttp, IConfiguration config)
+        public ChatbotService(ClientHttp clientHttp, IConfiguration config, AppDbContext context)
         {
             this._http = clientHttp;
             this.API_KEY = config["Gemini:ApiKey"];
+            this.API_URL = config["Gemini:ApiUrl"];
+            this.__context = context;
         }
 
-        public async Task<IEnumerable<Message>> Conversation(ChatbotPart chatbotPart)
+        public async Task<Chatbot> CriarChatbot()
         {
-            
-            Chatbot.Conversation.Add(new Message
+            Chatbot chatbot = new()
+            {
+                Conversation = new List<Message>()
+            };
+
+            var res = await __context.AddAsync(chatbot);
+            await __context.SaveChangesAsync();
+            return res.Entity;
+        }
+
+        public async Task<Chatbot> Conversation(long numeroChamado)
+        {
+            return await __context.Chatbots.Include(c => c.Conversation).FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+        }
+
+        public async Task<IEnumerable<Message>> Conversation(long numeroChamado, ChatbotPart chatbotPart)
+        {
+            var chatbot = await __context.Chatbots
+                .Include(c => c.Conversation)
+                .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+
+            if (chatbot == null)
+            {
+                chatbot = await CriarChatbot();
+                chatbot.NumeroChamado = numeroChamado;
+            }
+
+   
+            chatbot.Conversation.Add(new Message
             {
                 MessageType = MessageType.SENT,
                 MessageText = chatbotPart.text
             });
 
-            var chatbotIn = new ChatbotIn();
-            var chatbotContent = new ChatbotContent();
-
         
-            if (Chatbot.Conversation.Count == 1)
+            var chatbotIn = new ChatbotIn();
+
+            
+            if (chatbot.Conversation.Count == 1)
             {
-                chatbotContent.parts.Add(new ChatbotPart
+                chatbotIn.contents.Add(new ChatbotContent
                 {
-                    text = "Você é um membro da equipe de suporte técnico de informática. Responda com frases curtas, diretas lembrando sempre que o usuário pode ser leigo no assunto."
+                    parts = new List<ChatbotPart>
+                    {
+                        new ChatbotPart
+                        {
+                            text = "Você é um membro da equipe de suporte técnico de informática. Responda com frases curtas e diretas. Lembre-se que o usuário pode ser leigo no assunto. Sempre dê 3 sugestões do que pode ser feito."
+                        }
+                    }
                 });
             }
 
-            chatbotContent.parts.Add(chatbotPart);
-            chatbotIn.contents.Add(chatbotContent);
-
-            if (Chatbot.Conversation.Count > 1 && chatbotPart.text.ToLower().Equals("sim"))
+            
+            foreach (var msg in chatbot.Conversation)
             {
-                //TODO: FECHAR CHAMADO
-            } 
-            else 
-            {
-                //TODO: ABRIR CHAMADO
+                chatbotIn.contents.Add(new ChatbotContent
+                {
+                    parts = new List<ChatbotPart>
+                    {
+                        new ChatbotPart { text = msg.MessageText }
+                    }
+                });
             }
-        
-            var response = await _http.Enviar(
-                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
-                chatbotIn,
-                API_KEY
-            );
 
-    
+            
+            if (chatbot.Conversation.Count > 2)
+            {
+                switch (chatbotPart.text.ToLower())
+                {
+                    case "sim":
+                        chatbot.Conversation.Add(new Message
+                        {
+                            MessageType = MessageType.RECEIVED,
+                            MessageText = "Seu chamado foi encerrado"
+                        });
+                        break;
+                    case "não":
+                        chatbot.Conversation.Add(new Message
+                        {
+                            MessageType = MessageType.RECEIVED,
+                            MessageText = "Seu chamado será aberto e um técnico já vai atendê-lo"
+                        });
+                        break;
+                    default:
+                        await ChatResponse(chatbotIn, chatbot);
+                        chatbot.Conversation.Add(new Message
+                        {
+                            MessageType = MessageType.SOLVED,
+                            MessageText = "Essa conversa resolveu seu problema?"
+                        });
+                        break;
+                }
+            }
+            else
+            {
+                await ChatResponse(chatbotIn, chatbot);
+            }
+
+            __context.Update(chatbot);
+            await __context.SaveChangesAsync();
+
+            return chatbot.Conversation;
+        }
+
+
+        private async Task ChatResponse(ChatbotIn chatbotIn, Chatbot chatbot)
+        {
+            var response = await _http.Enviar(API_URL, chatbotIn, API_KEY);
+
             var chatbotOut = await response.Content.ReadFromJsonAsync<ChatbotOut>();
             var respostaTexto = chatbotOut?.candidates?.FirstOrDefault()?.content?.parts?.FirstOrDefault()?.text;
 
-    
             if (!string.IsNullOrWhiteSpace(respostaTexto))
             {
-                Chatbot.Conversation.Add(new Message
+                respostaTexto = Regex.Replace(respostaTexto, @"\*\*(.*?)\*\*", "$1");
+                chatbot.Conversation.Add(new Message
                 {
                     MessageType = MessageType.RECEIVED,
                     MessageText = respostaTexto
                 });
             }
-
-            return Chatbot.Conversation;
         }
-
-
     }
+
 }

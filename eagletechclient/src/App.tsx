@@ -2,16 +2,13 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MainPage from './pages/home';
+import MainPage from './pages/ChatPage';
+import Routers from './routes';
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path='' element={<MainPage />} />
-        </Routes>
-      </BrowserRouter>
+      <Routers />
     </div>
   );
 }

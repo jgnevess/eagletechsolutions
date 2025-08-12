@@ -19,10 +19,16 @@ public class ChatbotController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Conversation([FromBody] ChatbotPart chatbotPart)
+    public async Task<IActionResult> Conversation([FromBody] ChatbotPart chatbotPart, long numeroChamado)
     {
-        var response = await this._chatbotService.Conversation(chatbotPart: chatbotPart);
+        var response = await this._chatbotService.Conversation(numeroChamado, chatbotPart);
         return Ok(response);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Conversation(long numeroChamado)
+    {
+        return Ok(await this._chatbotService.Conversation(numeroChamado));
     }
 
 
