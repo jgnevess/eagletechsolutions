@@ -110,6 +110,11 @@ namespace eagletechapi.services
                             MessageType = MessageType.RECEIVED,
                             MessageText = "Seu chamado será aberto e um técnico já vai atendê-lo"
                         });
+                        // TODO: ABRIR CHAMADO 
+
+                        
+
+
                         break;
                     default:
                         await ChatResponse(chatbotIn, chatbot);

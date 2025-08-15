@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace eagletechapi.models
 {
-    public class Chatbot
+    public record Chatbot([property: Key] long Id, long NumeroChamado)
     {
-        [Key]
-        public long Id { get; set; }
-
-        public long NumeroChamado { get; set; }
         public ICollection<Message> Conversation { get; set; } = new List<Message>();
+
+        public Chatbot() : this(0L, 0L) { }
 
     }
 }
