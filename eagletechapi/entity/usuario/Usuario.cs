@@ -6,10 +6,22 @@ using System.Threading.Tasks;
 
 namespace eagletechapi.models.usuario
 {
-    public record Usuario([property: Key] int Matricula, string NomeCompleto, string Senha, string Telefone, Funcao Funcao)
+    public class Usuario
     {
-        public Usuario() : this(0, string.Empty, string.Empty, string.Empty, new Funcao()) { }
+        [Key]
+        public int Matricula { get; set; }
+        public string NomeCompleto { get; set; }
+        public string Senha { get; set; }
+        public string Telefone { get; set; }
+        public Funcao Funcao { get; set; }
 
-
+        public Usuario()
+        {
+            this.Matricula = 0;
+            this.NomeCompleto = string.Empty;
+            this.Senha = string.Empty;
+            this.Telefone = string.Empty;
+            this.Funcao = new();
+        }
     }
 }

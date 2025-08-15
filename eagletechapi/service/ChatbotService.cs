@@ -21,8 +21,8 @@ namespace eagletechapi.services
         public ChatbotService(ClientHttp clientHttp, IConfiguration config, AppDbContext context)
         {
             this._http = clientHttp;
-            this.API_KEY = config["Gemini:ApiKey"];
-            this.API_URL = config["Gemini:ApiUrl"];
+            this.API_KEY = config["Gemini:ApiKey"]!;
+            this.API_URL = config["Gemini:ApiUrl"]!;
             this.__context = context;
         }
 
@@ -40,7 +40,8 @@ namespace eagletechapi.services
 
         public async Task<Chatbot> Conversation(long numeroChamado)
         {
-            return await __context.Chatbots.Include(c => c.Conversation).FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+            var res = await __context.Chatbots.Include(c => c.Conversation).FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+            return res ?? throw new Exception();
         }
 
         public async Task<IEnumerable<Message>> Conversation(long numeroChamado, ChatbotPart chatbotPart)

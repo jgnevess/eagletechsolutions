@@ -20,12 +20,6 @@ namespace eagletechapi.Controllers
             this.__service = chamadoService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> test()
-        {
-            return Ok("Ok está controlado kkk");
-        }
-
         [HttpPost]
         public async Task<IActionResult> CriarChamado([FromBody] ChamadoIn chamadoIn)
         {

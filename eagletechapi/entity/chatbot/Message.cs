@@ -18,7 +18,7 @@ namespace eagletechapi.models
         public long ChatbotId { get; set; }
 
         [JsonIgnore]
-        public Chatbot Chatbot { get; set; }
+        public Chatbot Chatbot { get; set; } = new();
 
 
         public Message()

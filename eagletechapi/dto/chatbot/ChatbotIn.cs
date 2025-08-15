@@ -18,7 +18,7 @@ namespace eagletechapi.models
 
     public class ChatbotPart
     {
-        public string text { get; set; }
+        public string text { get; set; } = string.Empty;
     }
 
 }

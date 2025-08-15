@@ -16,7 +16,16 @@ namespace eagletechapi.http
 
         public async Task<T> Buscar<T>(string url)
         {
-            return await _http.GetFromJsonAsync<T>(url);
+            try
+            {
+                var res = await _http.GetFromJsonAsync<T>(url);
+                return res != null ? res : throw new Exception("");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         public async Task<HttpResponseMessage> Enviar<T>(string url, T dados, string apikey)

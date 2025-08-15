@@ -41,7 +41,7 @@ namespace eagletechapi.service
         {
             return await __context.Chamados.Include(c => c.Chatbot)
                 .ThenInclude(ch => ch.Conversation)
-                .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+                .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception();
         }
     }
 }

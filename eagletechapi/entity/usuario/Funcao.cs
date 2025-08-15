@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 
 namespace eagletechapi.models.usuario
 {
-    public record Funcao([property: Key] int Id, string NomeFuncao)
+    public class Funcao
     {
-        public Funcao() : this(0, string.Empty)
+        [Key]
+        public int Id { get; set; }
+        public string NomeFuncao { get; set; }
+
+        public Funcao()
         {
+            this.Id = 0;
+            this.NomeFuncao = string.Empty;
         }
 
-
+        
     }
 }
