@@ -1,0 +1,26 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using eagletechapi.dto.chamado;
+using eagletechapi.models.chamado.enums;
+
+namespace eagletechapi.service.interfaces
+{
+    public interface IChamadoService
+    {
+        Task<ChamadoOut> AbrirChamado(ChamadoIn chamadoIn);
+        Task<ChamadoOut?> BuscarChamado(int numeroChamado);
+        Task<IEnumerable<ChamadoOut>> BuscarChamados();
+        Task<IEnumerable<ChamadoOut>> BuscarChamados(Status status);
+        Task<IEnumerable<ChamadoOut>> BuscarChamados(int usuarioId, Status status);
+        Task<IEnumerable<ChamadoOut>> BuscarChamados(int usuarioId, Status status, DateTime abertura);
+        Task<IEnumerable<ChamadoOut>> BuscarChamados(int usuarioId, Status status, DateTime abertura, DateTime Fechamento);
+        Task<ChamadoOut?> EditarChamado(int numeroChamado, ChamadoIn chamadoIn);
+        Task<ChamadoOut?> AceitarChamado(int numeroChamado, int tecnicoId);
+        Task<ChamadoOut?> FecharChamado(int numeroChamado, int tecnicoId);
+        Task DeletarChamado(int numeroChamado);
+        
+
+    }
+}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using eagletechapi.entity.usuario;
 
 namespace eagletechapi.models.usuario
 {
@@ -21,7 +22,7 @@ namespace eagletechapi.models.usuario
             this.NomeCompleto = string.Empty;
             this.Senha = string.Empty;
             this.Telefone = string.Empty;
-            this.Funcao = new();
+            this.Funcao = Funcao.SOLICITANTE;
         }
     }
 }

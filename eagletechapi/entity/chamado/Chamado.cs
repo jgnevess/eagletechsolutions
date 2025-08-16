@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using eagletechapi.dto.chamado;
+using eagletechapi.entity.chamado.enums;
 using eagletechapi.models.chamado.enums;
 using eagletechapi.models.usuario;
 
@@ -31,7 +32,7 @@ namespace eagletechapi.models.chamado
             this.Descricao = string.Empty;
             this.Status = Status.ABERTO;
             this.Prioridade = Prioridade.BAIXA;
-            this.Categoria = new Categoria();
+            this.Categoria = Categoria.OUTROS;
             this.Abertura = DateTime.Now;
             this.Fechamento = DateTime.Now;
             this.Chatbot = new Chatbot();
@@ -48,7 +49,7 @@ namespace eagletechapi.models.chamado
             this.Prioridade = Prioridade.BAIXA;
             this.Categoria = chamadoIn.Categoria;
             this.Abertura = DateTime.Now;
-            this.Fechamento = DateTime.Now;
+            this.Fechamento = DateTime.MinValue;
             this.Chatbot = new Chatbot();
             this.Solicitante = new Usuario();
             this.Tecnico = new Usuario();
