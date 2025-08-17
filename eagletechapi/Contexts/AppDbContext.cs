@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using eagletechapi.models;
 using eagletechapi.models.chamado;
+using eagletechapi.models.usuario;
 using Microsoft.EntityFrameworkCore;
 
 namespace eagletechapi.Contexts
@@ -15,6 +16,7 @@ namespace eagletechapi.Contexts
         public DbSet<Chamado> Chamados { get; set; }
         public DbSet<Chatbot> Chatbots { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,0 +1,46 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
+using Moq;
+using eagletechapi.Contexts;
+using Microsoft.EntityFrameworkCore;
+using eagletechapi.models.usuario;
+using eagletechapi.dto.usuario;
+using eagletechapi.service.implements;
+
+namespace eagletechapi.test.service
+{
+    public class UsuarioServiceTest
+    {
+
+        private AppDbContext GetInMemoryDb()
+        {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDb")
+                .Options;
+            return new AppDbContext(options);
+        }
+
+        [Fact]
+        public async Task CreateUserReturnSuccess()
+        {
+            UsuarioIn usuarioIn = new();
+            usuarioIn.NomeCompleto = "João Silva";
+            usuarioIn.Senha = "123456789";
+            usuarioIn.Telefone = "16993000000";
+            usuarioIn.Funcao = entity.usuario.Funcao.ADMIN;
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+
+            await service.CadastrarUsuario(usuarioIn);
+
+            var res = await context.Usuarios.FindAsync(1);
+
+            Assert.NotNull(res);
+            Assert.Equal("João Silva", res.NomeCompleto);
+            Assert.NotEqual("123456789", res.Senha);
+        }
+    }
+}
