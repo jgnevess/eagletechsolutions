@@ -40,14 +40,14 @@ namespace eagletechapi.service.implements
         public async Task<UsuarioOut?> BuscarUsuario(int matricula)
         {
             var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Matricula == matricula);
-            if(usuario == null) return null;
+            if (usuario == null) return null;
             return new UsuarioOut(usuario);
         }
 
         public async Task<UsuarioOut?> BuscarUsuario(string nome)
         {
             var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.NomeCompleto.Contains(nome, StringComparison.CurrentCultureIgnoreCase));
-            if(usuario == null) return null;
+            if (usuario == null) return null;
             return new UsuarioOut(usuario);
         }
 
@@ -57,6 +57,8 @@ namespace eagletechapi.service.implements
 
             var validationContext = new ValidationContext(usuario);
             Validator.ValidateObject(usuario, validationContext, true);
+
+            if (await __context.Usuarios.AnyAsync(u => u.Email == usuario.Email)) throw new Exception("Email já cadastrado");
 
             var res = await __context.AddAsync(usuario);
             await __context.SaveChangesAsync();

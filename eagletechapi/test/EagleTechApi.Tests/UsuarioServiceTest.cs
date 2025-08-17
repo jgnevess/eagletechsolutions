@@ -11,6 +11,7 @@ using eagletechapi.dto.usuario;
 using eagletechapi.service.implements;
 using System.ComponentModel.DataAnnotations;
 using eagletechapi.entity.usuario;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace eagletechapi.test.service
 {
@@ -89,8 +90,6 @@ namespace eagletechapi.test.service
             var usuarioIn = CriarUsuario();
             usuarioIn.Email = "Jo";
 
-            Console.WriteLine(usuarioIn);
-
             var context = GetInMemoryDb();
             var service = new UserService(context);
 
@@ -100,12 +99,27 @@ namespace eagletechapi.test.service
         }
 
         [Fact]
+        public async Task CreateUserThrowExceptionEmailUnique()
+        {
+            
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+            var ex = await Assert.ThrowsAsync<Exception>(
+                () => service.CadastrarUsuario(usuarioIn)
+            );
+
+            Assert.Equal("Email já cadastrado", ex.Message);
+        }
+
+        [Fact]
         public async Task CreateUserThrowExceptionEmailIsRequired()
         {
             var usuarioIn = CriarUsuario();
             usuarioIn.Email = "";
-
-            Console.WriteLine(usuarioIn);
 
             var context = GetInMemoryDb();
             var service = new UserService(context);

@@ -6,9 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using eagletechapi.dto.usuario;
 using eagletechapi.entity.usuario;
+using Microsoft.EntityFrameworkCore;
 
 namespace eagletechapi.models.usuario
 {
+    [Index(nameof(Email), IsUnique = true)]
     public class Usuario
     {
         [Key]

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using eagletechapi.dto.chamado;
 using eagletechapi.service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eagletechapi.Controllers
@@ -32,6 +33,13 @@ namespace eagletechapi.Controllers
         {
             var res = await __service.BuscarTodosPorChamados(numeroChamado);
             return Ok(res);
+        }
+
+        [HttpGet("Test")]
+        [Authorize]
+        public IActionResult TestController()
+        {
+            return Ok("Está funcionando");
         }
     }
 }
