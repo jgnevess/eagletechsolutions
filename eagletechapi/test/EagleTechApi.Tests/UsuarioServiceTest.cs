@@ -10,6 +10,7 @@ using eagletechapi.models.usuario;
 using eagletechapi.dto.usuario;
 using eagletechapi.service.implements;
 using System.ComponentModel.DataAnnotations;
+using eagletechapi.entity.usuario;
 
 namespace eagletechapi.test.service
 {
@@ -179,6 +180,227 @@ namespace eagletechapi.test.service
             var res = await service.ListarTodos();
 
             Assert.NotEmpty(res);
+        }
+
+        [Fact]
+        public async Task FindUsersShouldNull()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+
+            var res = await service.BuscarUsuario(1);
+
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public async Task FindUsersShouldNotNull()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+            var res = await service.BuscarUsuario(1);
+
+            Assert.NotNull(res);
+            Assert.Equal("João Silva", res.NomeCompleto);
+        }
+
+        [Fact]
+        public async Task FindUsersByNameShouldNull()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+
+            var res = await service.BuscarUsuario("joao");
+
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public async Task FindUsersByNameShouldNotNull()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+            var res = await service.BuscarUsuario("Jo");
+
+            Assert.NotNull(res);
+            Assert.Equal("João Silva", res.NomeCompleto);
+        }
+
+        [Fact]
+        public async Task UpdatePasswordShouldThrowNotFoundExeption()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "Jo"));
+            var ex2 = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "Jo", "xyz"));
+            Assert.Equal("Usuario não encontrado", ex.Message);
+            Assert.Equal("Usuario não encontrado", ex2.Message);
+        }
+
+        [Fact]
+        public async Task UpdatePasswordShouldThrowIncorrectPasswordExeption()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "Jo", "xyz"));
+            Assert.Equal("Senha incorreta", ex.Message);
+        }
+
+        [Fact]
+        public async Task UpdatePasswordShouldThrowEqualsPasswordExeption()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "SenhaSuperDificil123*", "SenhaSuperDificil123*"));
+            Assert.Equal("A nova senha precisa ser diferente da antiga", ex.Message);
+        }
+
+        [Fact]
+        public async Task UpdatePasswordShouldReturnSuccess()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+
+            var res = await service.AlterarSenha(1, "NovaSenhaDificil321.", "SenhaSuperDificil123*");
+            Assert.NotNull(res);
+        }
+
+        [Fact]
+        public async Task UpdatePasswordByAdminShouldReturnSuccess()
+        {
+
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+
+            var res = await service.AlterarSenha(1, "NovaSenhaDificil321.");
+            Assert.NotNull(res);
+        }
+
+        [Fact]
+        public async Task DeleteUserShouldThrowException()
+        {
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.DeletarUsuario(1));
+
+            Assert.Equal("Usuario não encontrado", ex.Message);
+        }
+
+        [Fact]
+        public async Task DeleteUserShouldSuccess()
+        {
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+            await service.DeletarUsuario(1);
+            var res = await service.BuscarUsuario(1);
+
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public async Task UpdateUserShouldThrowException()
+        {
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.EditarUsuario(1, new UsuarioUpdateIn()));
+
+            Assert.Equal("Usuario não encontrado", ex.Message);
+        }
+
+        [Fact]
+        public async Task UpdateUserShouldSuccess()
+        {
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+            int matricula = 1;
+            string nome = "João Gabriel Silva";
+            string telefone = "16993000001";
+            Funcao funcao = Funcao.TECNICO;
+            string email = "joaoteste@testeemail.com";
+
+            var res = await service.EditarUsuario(matricula, new UsuarioUpdateIn()
+            {
+                Matricula = matricula,
+                NomeCompleto = nome,
+                Telefone = telefone,
+                Funcao = funcao,
+                Email = email
+            });
+
+            Assert.NotNull(res);
+            Assert.Equal(matricula, res.Matricula);
+            Assert.Equal(nome, res.NomeCompleto);
+            Assert.Equal(funcao, res.Funcao);
+            Assert.Equal(email, res.Email);
+        }
+
+        [Fact]
+        public async Task UpdateUserShouldThrowValidadeException()
+        {
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+            int matricula = 1;
+            string nome = "";
+            string telefone = "16993000001";
+            Funcao funcao = Funcao.TECNICO;
+            string email = "joaoteste@testeemail.com";
+
+
+
+            var ex = await Assert.ThrowsAsync<ValidationException>(() => service.
+                EditarUsuario(matricula,
+                    new UsuarioUpdateIn()
+                    {
+                        Matricula = matricula,
+                        NomeCompleto = nome,
+                        Telefone = telefone,
+                        Funcao = funcao,
+                        Email = email
+                    }
+                )
+            );
+
+            Assert.Equal("O nome é obrigatório", ex.Message);
         }
     }
 }

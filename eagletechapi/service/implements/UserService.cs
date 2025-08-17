@@ -17,19 +17,38 @@ namespace eagletechapi.service.implements
 
         private readonly AppDbContext __context = context;
 
-        public Task<UsuarioOut> AlterarSenha(string novaSenha)
+        public async Task<UsuarioOut?> AlterarSenha(int matricula, string novaSenha)
         {
-            throw new NotImplementedException();
+            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Matricula == matricula) ?? throw new Exception("Usuario não encontrado");
+            usuario.Senha = BCrypt.Net.BCrypt.HashPassword(novaSenha);
+            __context.Update(usuario);
+            await __context.SaveChangesAsync();
+            return new UsuarioOut(usuario);
         }
 
-        public Task<UsuarioOut?> BuscarUsuario(int matricula)
+        public async Task<UsuarioOut?> AlterarSenha(int matricula, string novaSenha, string senhaAntiga)
         {
-            throw new NotImplementedException();
+            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Matricula == matricula) ?? throw new Exception("Usuario não encontrado");
+            if (BCrypt.Net.BCrypt.Verify(novaSenha, usuario.Senha)) throw new Exception("A nova senha precisa ser diferente da antiga");
+            if (!BCrypt.Net.BCrypt.Verify(senhaAntiga, usuario.Senha)) throw new Exception("Senha incorreta");
+            usuario.Senha = BCrypt.Net.BCrypt.HashPassword(novaSenha);
+            __context.Update(usuario);
+            await __context.SaveChangesAsync();
+            return new UsuarioOut(usuario);
         }
 
-        public Task<UsuarioOut?> BuscarUsuario(string nome)
+        public async Task<UsuarioOut?> BuscarUsuario(int matricula)
         {
-            throw new NotImplementedException();
+            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Matricula == matricula);
+            if(usuario == null) return null;
+            return new UsuarioOut(usuario);
+        }
+
+        public async Task<UsuarioOut?> BuscarUsuario(string nome)
+        {
+            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.NomeCompleto.Contains(nome, StringComparison.CurrentCultureIgnoreCase));
+            if(usuario == null) return null;
+            return new UsuarioOut(usuario);
         }
 
         public async Task<UsuarioOut> CadastrarUsuario(UsuarioIn usuarioIn)
@@ -44,14 +63,27 @@ namespace eagletechapi.service.implements
             return new UsuarioOut(res.Entity);
         }
 
-        public Task DeletarUsuario(int matricula)
+        public async Task DeletarUsuario(int matricula)
         {
-            throw new NotImplementedException();
+            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Matricula == matricula) ?? throw new Exception("Usuario não encontrado");
+            __context.Usuarios.Remove(usuario);
+            await __context.SaveChangesAsync();
         }
 
-        public Task<UsuarioOut> EditarUsuario(int matricula, UsuarioIn usuarioIn)
+        public async Task<UsuarioOut> EditarUsuario(int matricula, UsuarioUpdateIn usuarioIn)
         {
-            throw new NotImplementedException();
+            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Matricula == matricula) ?? throw new Exception("Usuario não encontrado");
+            usuario.NomeCompleto = usuarioIn.NomeCompleto;
+            usuario.Telefone = usuarioIn.Telefone;
+            usuario.Funcao = usuarioIn.Funcao;
+            usuario.Email = usuarioIn.Email;
+
+            var validationContext = new ValidationContext(usuario);
+            Validator.ValidateObject(usuario, validationContext, true);
+
+            __context.Usuarios.Update(usuario);
+            await __context.SaveChangesAsync();
+            return new UsuarioOut(usuario);
         }
 
         public async Task<IEnumerable<UsuarioOut>> ListarTodos()
