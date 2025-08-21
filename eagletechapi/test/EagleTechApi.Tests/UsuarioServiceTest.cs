@@ -105,6 +105,7 @@ namespace eagletechapi.test.service
             var context = GetInMemoryDb();
             var service = new UserService(context);
 
+
             var usuarioIn = CriarUsuario();
             await service.CadastrarUsuario(usuarioIn);
 

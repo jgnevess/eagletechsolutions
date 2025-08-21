@@ -55,19 +55,67 @@ namespace EagleTechApi.Tests
             await service.CadastrarUsuario(usuarioIn);
             var dto = new LoginDto()
             {
-                Email = "joao@testeemail.com",
+                Matricula = 1,
                 Senha = "SenhaSuperDificil123*"
             };
-            
+
             var res = await auth.Login(dto);
 
             var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(res);
+            var jwt = handler.ReadJwtToken(res["Token"]);
 
             Assert.Equal("joao@testeemail.com", jwt.Claims.First(c => c.Type == ClaimTypes.Name).Value);
             Assert.Equal("ADMIN", jwt.Claims.First(c => c.Type == ClaimTypes.Role).Value);
-            Assert.False(string.IsNullOrEmpty(res));
+            Assert.False(string.IsNullOrEmpty(res["Token"]));
+            Assert.Equal("ADMIN", res["Role"]);
+        }
 
+        [Fact]
+        public async Task TestLoginShouldThrowExeptionNotFoundUser()
+        {
+            var usuarioIn = CriarUsuario();
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var mockConfig = new Mock<IConfiguration>();
+            mockConfig.Setup(c => c["Jwt:Key"]).Returns((string?)"12345678901234567890123456789012");
+
+
+            var auth = new AuthService(context, mockConfig.Object);
+
+            await service.CadastrarUsuario(usuarioIn);
+            var dto = new LoginDto()
+            {
+                Matricula = 99,
+                Senha = "SenhaSuperDificil123*"
+            };
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => auth.Login(dto));
+
+            Assert.Equal("Usuario não encontrado", ex.Message);
+        }
+
+        [Fact]
+        public async Task TestLoginShouldThrowExeptionincorrectPassword()
+        {
+            var usuarioIn = CriarUsuario();
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var mockConfig = new Mock<IConfiguration>();
+            mockConfig.Setup(c => c["Jwt:Key"]).Returns((string?)"12345678901234567890123456789012");
+
+
+            var auth = new AuthService(context, mockConfig.Object);
+
+            await service.CadastrarUsuario(usuarioIn);
+            var dto = new LoginDto()
+            {
+                Matricula = 1,
+                Senha = "SenhaSuperDificil123"
+            };
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => auth.Login(dto));
+
+            Assert.Equal("Senha incorreta", ex.Message);
         }
     }
 }

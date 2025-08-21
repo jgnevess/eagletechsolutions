@@ -8,8 +8,8 @@ namespace eagletechapi.dto.usuario
     public class LoginDto
     {
 
-        /// <example>joaoteste@teste.com</example>
-        public string Email { get; set; } = string.Empty;
+        /// <example>1</example>
+        public int Matricula { get; set; } = 0;
         /// <example>SenhaSuperDificil123*</example>
         public string Senha { get; set; } = string.Empty;
     }

@@ -22,9 +22,9 @@ namespace eagletechapi.service.implements
 
 
 
-        public async Task<string?> Login(LoginDto loginDto)
+        public async Task<Dictionary<string, string>> Login(LoginDto loginDto)
         {
-            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Email.Equals(loginDto.Email)) ??
+            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(loginDto.Matricula)) ??
             throw new Exception("Usuario não encontrado");
 
             if (!BCrypt.Net.BCrypt.Verify(loginDto.Senha, usuario.Senha)) throw new Exception("Senha incorreta");
@@ -45,9 +45,15 @@ namespace eagletechapi.service.implements
                 claims: claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds
-            );  
+            );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            Dictionary<string, string> response = new()
+            {
+                { "Token", new JwtSecurityTokenHandler().WriteToken(token) },
+                { "Role", usuario.Funcao.ToString() }
+            };
+
+            return response;
         }
     }
 }
