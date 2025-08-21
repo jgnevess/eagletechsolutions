@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ChatPage from "../pages/ChatPage";
 import NovoChamado from "../pages/Home";
 import NotFound from "../pages/notfound";
+import LoginPage from "../pages/login";
 
 const Routers = () => {
     return(
@@ -10,7 +11,7 @@ const Routers = () => {
             <Routes>
                 <Route path="*" element={<NotFound />}/>
                 <Route path="/chat/:numeroChamado" element={<ChatPage />}/>
-                <Route path="/" element={<NovoChamado />}/>
+                <Route path="/" element={<LoginPage />}/>
             </Routes>
         </BrowserRouter>
     )
