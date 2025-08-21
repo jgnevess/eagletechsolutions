@@ -31,7 +31,7 @@ namespace eagletechapi.test.service
             UsuarioIn usuarioIn = new()
             {
                 NomeCompleto = "João Silva",
-                Senha = "SenhaSuperDificil123*",
+                Senha = "Senhapadrao1*",
                 Telefone = "16993000000",
                 Funcao = entity.usuario.Funcao.ADMIN,
                 Email = "joao@testeemail.com"
@@ -53,7 +53,7 @@ namespace eagletechapi.test.service
 
             Assert.NotNull(res);
             Assert.Equal("João Silva", res.NomeCompleto);
-            Assert.NotEqual("SenhaSuperDificil123*", res.Senha);
+            Assert.NotEqual("Senhapadrao1*", res.Senha);
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace eagletechapi.test.service
         [Fact]
         public async Task CreateUserThrowExceptionEmailUnique()
         {
-            
+
             var context = GetInMemoryDb();
             var service = new UserService(context);
 
@@ -257,9 +257,10 @@ namespace eagletechapi.test.service
 
             var context = GetInMemoryDb();
             var service = new UserService(context);
+            var up = new PasswordUpdate(1, "Jo", "xyz.", "xyz.");
 
             var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "Jo"));
-            var ex2 = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "Jo", "xyz"));
+            var ex2 = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(up));
             Assert.Equal("Usuario não encontrado", ex.Message);
             Assert.Equal("Usuario não encontrado", ex2.Message);
         }
@@ -267,14 +268,14 @@ namespace eagletechapi.test.service
         [Fact]
         public async Task UpdatePasswordShouldThrowIncorrectPasswordExeption()
         {
-
+            var up = new PasswordUpdate(1, "Jo", "xyz.", "xyz.");
             var context = GetInMemoryDb();
             var service = new UserService(context);
             var usuarioIn = CriarUsuario();
             await service.CadastrarUsuario(usuarioIn);
 
 
-            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "Jo", "xyz"));
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(up));
             Assert.Equal("Senha incorreta", ex.Message);
         }
 
@@ -282,13 +283,14 @@ namespace eagletechapi.test.service
         public async Task UpdatePasswordShouldThrowEqualsPasswordExeption()
         {
 
+            var up = new PasswordUpdate(1, "Senhapadrao1*", "Senhapadrao1*", "Senhapadrao1*");
             var context = GetInMemoryDb();
             var service = new UserService(context);
             var usuarioIn = CriarUsuario();
             await service.CadastrarUsuario(usuarioIn);
 
 
-            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "SenhaSuperDificil123*", "SenhaSuperDificil123*"));
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(up));
             Assert.Equal("A nova senha precisa ser diferente da antiga", ex.Message);
         }
 
@@ -296,13 +298,14 @@ namespace eagletechapi.test.service
         public async Task UpdatePasswordShouldReturnSuccess()
         {
 
+            var up = new PasswordUpdate(1, "Senhapadrao1*", "NovaSenhaDificil321.", "NovaSenhaDificil321.");
             var context = GetInMemoryDb();
             var service = new UserService(context);
             var usuarioIn = CriarUsuario();
             await service.CadastrarUsuario(usuarioIn);
 
 
-            var res = await service.AlterarSenha(1, "NovaSenhaDificil321.", "SenhaSuperDificil123*");
+            var res = await service.AlterarSenha(up);
             Assert.NotNull(res);
         }
 

@@ -11,27 +11,22 @@ namespace eagletechapi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ChamadosController : ControllerBase
+    public class ChamadosController(ChamadoService chamadoService) : ControllerBase
     {
 
-        private readonly ChamadoService __service;
-
-        public ChamadosController(ChamadoService chamadoService)
-        {
-            this.__service = chamadoService;
-        }
+        private readonly ChamadoService _service = chamadoService;
 
         [HttpPost]
         public async Task<IActionResult> CriarChamado([FromBody] ChamadoIn chamadoIn)
         {
-            var chamado = await __service.CriarChamado(chamadoIn);
+            var chamado = await _service.CriarChamado(chamadoIn);
             return Ok(chamado);
         }
 
         [HttpGet("BuscarTodos")]
         public async Task<IActionResult> BuscarTodos(long numeroChamado)
         {
-            var res = await __service.BuscarTodosPorChamados(numeroChamado);
+            var res = await _service.BuscarTodosPorChamados(numeroChamado);
             return Ok(res);
         }
 

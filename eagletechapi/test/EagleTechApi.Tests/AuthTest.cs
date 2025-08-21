@@ -31,7 +31,7 @@ namespace EagleTechApi.Tests
             UsuarioIn usuarioIn = new()
             {
                 NomeCompleto = "João Silva",
-                Senha = "SenhaSuperDificil123*",
+                Senha = "Senhapadrao1*",
                 Telefone = "16993000000",
                 Funcao = Funcao.ADMIN,
                 Email = "joao@testeemail.com"
@@ -56,7 +56,7 @@ namespace EagleTechApi.Tests
             var dto = new LoginDto()
             {
                 Matricula = 1,
-                Senha = "SenhaSuperDificil123*"
+                Senha = "Senhapadrao1*"
             };
 
             var res = await auth.Login(dto);
@@ -68,6 +68,7 @@ namespace EagleTechApi.Tests
             Assert.Equal("ADMIN", jwt.Claims.First(c => c.Type == ClaimTypes.Role).Value);
             Assert.False(string.IsNullOrEmpty(res["Token"]));
             Assert.Equal("ADMIN", res["Role"]);
+            Assert.Equal("True", res["FirstLogin"]);
         }
 
         [Fact]
@@ -86,7 +87,7 @@ namespace EagleTechApi.Tests
             var dto = new LoginDto()
             {
                 Matricula = 99,
-                Senha = "SenhaSuperDificil123*"
+                Senha = "Senhapadrao1*"
             };
 
             var ex = await Assert.ThrowsAsync<Exception>(() => auth.Login(dto));

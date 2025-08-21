@@ -16,14 +16,14 @@ namespace eagletechapi.services
         private readonly string API_KEY;
         private readonly string API_URL;
         private readonly ClientHttp _http;
-        private readonly AppDbContext __context;
+        private readonly AppDbContext _context;
 
         public ChatbotService(ClientHttp clientHttp, IConfiguration config, AppDbContext context)
         {
             this._http = clientHttp;
             this.API_KEY = config["Gemini:ApiKey"]!;
             this.API_URL = config["Gemini:ApiUrl"]!;
-            this.__context = context;
+            this._context = context;
         }
 
         public async Task<Chatbot> CriarChatbot()
@@ -33,20 +33,20 @@ namespace eagletechapi.services
                 Conversation = new List<Message>()
             };
 
-            var res = await __context.AddAsync(chatbot);
-            await __context.SaveChangesAsync();
+            var res = await _context.AddAsync(chatbot);
+            await _context.SaveChangesAsync();
             return res.Entity;
         }
 
         public async Task<Chatbot> Conversation(long numeroChamado)
         {
-            var res = await __context.Chatbots.Include(c => c.Conversation).FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+            var res = await _context.Chatbots.Include(c => c.Conversation).FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
             return res ?? throw new Exception();
         }
 
         public async Task<IEnumerable<Message>> Conversation(long numeroChamado, ChatbotPart chatbotPart)
         {
-            var chatbot = await __context.Chatbots
+            var chatbot = await _context.Chatbots
                 .Include(c => c.Conversation)
                 .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
 
@@ -132,8 +132,8 @@ namespace eagletechapi.services
                 await ChatResponse(chatbotIn, chatbot);
             }
 
-            __context.Update(chatbot);
-            await __context.SaveChangesAsync();
+            _context.Update(chatbot);
+            await _context.SaveChangesAsync();
 
             return chatbot.Conversation;
         }

@@ -25,10 +25,17 @@ namespace eagletechapi.Controllers
         }
 
         [HttpPost("register")]
-        [Authorize(Roles = "ADMIN")]
+        // [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Register([FromBody] UsuarioIn usuarioIn)
         {
             var res = await _userService.CadastrarUsuario(usuarioIn);
+            return Ok(res);
+        }
+
+        [HttpPut("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] PasswordUpdate passwordUpdate)
+        {
+            var res = await _userService.AlterarSenha(passwordUpdate);
             return Ok(res);
         }
     }

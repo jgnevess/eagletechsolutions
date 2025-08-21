@@ -8,15 +8,10 @@ namespace eagletechapi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ChatbotController : ControllerBase
+public class ChatbotController(ChatbotService chatbotService) : ControllerBase
 {
 
-    private readonly ChatbotService _chatbotService;
-
-    public ChatbotController(ChatbotService chatbotService)
-    {
-        this._chatbotService = chatbotService;
-    }
+    private readonly ChatbotService _chatbotService = chatbotService;
 
     [HttpPost]
     public async Task<IActionResult> Conversation([FromBody] ChatbotPart chatbotPart, long numeroChamado)

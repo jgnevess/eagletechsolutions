@@ -10,7 +10,7 @@ namespace eagletechapi.service.interfaces
     {
         Task<UsuarioOut> CadastrarUsuario(UsuarioIn usuarioIn);
         Task<UsuarioOut?> AlterarSenha(int matricula, string novaSenha);
-        Task<UsuarioOut?> AlterarSenha(int matricula, string novaSenha, string senhaAntiga);
+        Task<UsuarioOut?> AlterarSenha(PasswordUpdate passwordUpdate);
         Task<IEnumerable<UsuarioOut>> ListarTodos();
         Task<UsuarioOut?> BuscarUsuario(int matricula);
         Task<UsuarioOut?> BuscarUsuario(string nome);

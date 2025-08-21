@@ -17,14 +17,14 @@ namespace eagletechapi.service.implements
 {
     public class AuthService(AppDbContext context, IConfiguration configuration) : IAuthService
     {
-        private readonly AppDbContext __context = context;
-        private readonly IConfiguration __config = configuration;
+        private readonly AppDbContext _context = context;
+        private readonly IConfiguration _config = configuration;
 
 
 
         public async Task<Dictionary<string, string>> Login(LoginDto loginDto)
         {
-            var usuario = await __context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(loginDto.Matricula)) ??
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(loginDto.Matricula)) ??
             throw new Exception("Usuario não encontrado");
 
             if (!BCrypt.Net.BCrypt.Verify(loginDto.Senha, usuario.Senha)) throw new Exception("Senha incorreta");
@@ -36,7 +36,7 @@ namespace eagletechapi.service.implements
             };
 
 
-            string API_KEY = __config["Jwt:Key"] ?? "";
+            string API_KEY = _config["Jwt:Key"] ?? "";
 
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(API_KEY));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -47,12 +47,16 @@ namespace eagletechapi.service.implements
                 signingCredentials: creds
             );
 
+
             Dictionary<string, string> response = new()
             {
                 { "Token", new JwtSecurityTokenHandler().WriteToken(token) },
                 { "Role", usuario.Funcao.ToString() }
             };
 
+            if (usuario.firstLogin) response.Add("FirstLogin", "True");
+            else response.Add("FirstLogin", "False");
+            
             return response;
         }
     }

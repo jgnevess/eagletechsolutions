@@ -32,6 +32,7 @@ namespace eagletechapi.models.usuario
         [Required]
         [EmailAddress(ErrorMessage = "O email não é valido")]
         public string Email { get; set; }
+        public bool firstLogin { get; set; } = true;
 
         public Usuario()
         {
@@ -41,6 +42,15 @@ namespace eagletechapi.models.usuario
             this.Telefone = string.Empty;
             this.Funcao = Funcao.SOLICITANTE;
             this.Email = string.Empty;
+        }
+
+        public Usuario(UsuarioIn usuarioIn, string senha)
+        {
+            this.NomeCompleto = usuarioIn.NomeCompleto;
+            this.Senha = BCrypt.Net.BCrypt.HashPassword(senha);
+            this.Telefone = usuarioIn.Telefone;
+            this.Funcao = usuarioIn.Funcao;
+            this.Email = usuarioIn.Email;
         }
 
         public Usuario(UsuarioIn usuarioIn)
