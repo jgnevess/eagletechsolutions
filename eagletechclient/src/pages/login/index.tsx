@@ -12,8 +12,7 @@ const LoginPage = () => {
         event.preventDefault();
 
         handleLoginAsync(matricula, senha).then(res => {
-            alert(res.Role);
-            alert(res.Token);
+            alert(res.LoginResposta)
         });
 
     }

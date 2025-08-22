@@ -20,8 +20,16 @@ namespace eagletechapi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            var res = await _authService.Login(dto);
-            return Ok(res);
+            try
+            {
+                var res = await _authService.Login(dto);
+                return Ok(res);
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);   
+            }
         }
 
         [HttpPost("register")]
