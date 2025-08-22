@@ -62,13 +62,13 @@ namespace EagleTechApi.Tests
             var res = await auth.Login(dto);
 
             var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(res["Token"]);
+            var jwt = handler.ReadJwtToken((string) res["Token"]);
 
             Assert.Equal("joao@testeemail.com", jwt.Claims.First(c => c.Type == ClaimTypes.Name).Value);
             Assert.Equal("ADMIN", jwt.Claims.First(c => c.Type == ClaimTypes.Role).Value);
-            Assert.False(string.IsNullOrEmpty(res["Token"]));
-            Assert.Equal("ADMIN", res["Role"]);
-            Assert.Equal("True", res["FirstLogin"]);
+            Assert.False(string.IsNullOrEmpty((string) res["Token"]));
+            Assert.Equal("ADMIN",(string) res["Role"]);
+            Assert.True((bool) res["FirstLogin"]);
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace EagleTechApi.Tests
 
             var ex = await Assert.ThrowsAsync<Exception>(() => auth.Login(dto));
 
-            Assert.Equal("Usuario não encontrado", ex.Message);
+            Assert.Equal("Usuario não encontrado, solicite o cadastro com um Administrador", ex.Message);
         }
 
         [Fact]

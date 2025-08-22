@@ -20,6 +20,10 @@ namespace eagletechapi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
+            if (!ModelState.IsValid) return BadRequest(new Dictionary<string, string>()
+            {
+                { "Error", "Preencher todos os dados" },
+            });
             try
             {
                 var res = await _authService.Login(dto);
@@ -28,7 +32,11 @@ namespace eagletechapi.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);   
+                var res = new Dictionary<string, string>
+                {
+                    { "Error", e.Message }
+                };
+                return BadRequest(res);
             }
         }
 
@@ -36,12 +44,27 @@ namespace eagletechapi.Controllers
         // [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Register([FromBody] UsuarioIn usuarioIn)
         {
-            var res = await _userService.CadastrarUsuario(usuarioIn);
-            return Ok(res);
+            if (!ModelState.IsValid) return BadRequest(new Dictionary<string, string>()
+            {
+                { "Error", "Preencher todos os dados" },
+            });
+            try
+            {
+                var res = await _userService.CadastrarUsuario(usuarioIn);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                var res = new Dictionary<string, string>
+                {
+                    { "Error", e.Message }
+                };
+                return BadRequest(res);
+            }
         }
 
         [HttpPut("update-password")]
-        public async Task<IActionResult> UpdatePassword([FromBody] PasswordUpdate passwordUpdate)
+        public async Task<IActionResult> UpdatePassword([FromBody] SimplePasswordUpdate passwordUpdate)
         {
             var res = await _userService.AlterarSenha(passwordUpdate);
             return Ok(res);

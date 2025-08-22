@@ -258,8 +258,9 @@ namespace eagletechapi.test.service
             var context = GetInMemoryDb();
             var service = new UserService(context);
             var up = new PasswordUpdate(1, "Jo", "xyz.", "xyz.");
+            var sup = new SimplePasswordUpdate(1, "xyz.", "xyz.");
 
-            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(1, "Jo"));
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(sup));
             var ex2 = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(up));
             Assert.Equal("Usuario não encontrado", ex.Message);
             Assert.Equal("Usuario não encontrado", ex2.Message);
@@ -267,6 +268,20 @@ namespace eagletechapi.test.service
 
         [Fact]
         public async Task UpdatePasswordShouldThrowIncorrectPasswordExeption()
+        {
+            var up = new PasswordUpdate(1, "Jo", "xyz.", "xyz.");
+            var context = GetInMemoryDb();
+            var service = new UserService(context);
+            var usuarioIn = CriarUsuario();
+            await service.CadastrarUsuario(usuarioIn);
+
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.AlterarSenha(up));
+            Assert.Equal("Senha incorreta", ex.Message);
+        }
+
+        [Fact]
+        public async Task UpdatePasswordShouldThrowValidationExeption()
         {
             var up = new PasswordUpdate(1, "Jo", "xyz.", "xyz.");
             var context = GetInMemoryDb();
@@ -316,10 +331,11 @@ namespace eagletechapi.test.service
             var context = GetInMemoryDb();
             var service = new UserService(context);
             var usuarioIn = CriarUsuario();
+            var sup = new SimplePasswordUpdate(1, "NovaSenhaDificil321.", "NovaSenhaDificil321.");
             await service.CadastrarUsuario(usuarioIn);
 
 
-            var res = await service.AlterarSenha(1, "NovaSenhaDificil321.");
+            var res = await service.AlterarSenha(sup);
             Assert.NotNull(res);
         }
 

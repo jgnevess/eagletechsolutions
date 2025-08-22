@@ -1,42 +1,104 @@
 import React, { useState } from "react";
-import { handleLoginAsync } from "../../service/login";
+import { Error, handleLoginAsync, LoginResposta } from "../../service/login";
+import { useNavigate } from "react-router-dom";
+import Alert, { PropsAlert } from "../../components/alert";
+import Container from "../../components/container";
 
 
 const LoginPage = () => {
 
+
     const [matricula, setMatricula] = useState('');
     const [senha, setSenha] = useState('');
-
+    const [alert, setAlert] = useState(false);
+    const [message, setMessage] = useState('');
+    const [alertType, setAlertType] = useState<PropsAlert["type"]>('alert alert-primary');
+    const [showSenha, setShowSenha] = useState(false);
+    const navigate = useNavigate();
 
     const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         handleLoginAsync(matricula, senha).then(res => {
-            alert(res.LoginResposta)
+            if (res.status == 200) {
+                const data = res.LoginResposta as LoginResposta
+                sessionStorage.setItem("token", data.Token);
+                sessionStorage.setItem("role", data.Role);
+                sessionStorage.setItem("matricula", data.Matricula.toLocaleString())
+                sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
+
+                if (data.FirstLogin) {
+                    navigate('/nova-senha')
+                }
+                else {
+                    if(data.Role === "ADMIN") {
+                        return navigate('/admin')
+                    }
+
+                    if(data.Role === "TECNICO") {
+                        return navigate('/tec')
+                    }
+
+                    return navigate('/');
+                }
+
+            } else if (res.status == 400) {
+                const data = res.LoginResposta as Error
+                setMessage(data.Error)
+                setAlert(true)
+                setAlertType('alert alert-danger')
+
+                setTimeout(() => {
+                    setMessage('')
+                    setAlert(false)
+                    setAlertType('alert alert-primary')
+                }, 2500)
+            }
         });
 
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const apenasNumeros = e.target.value.replace(/[^0-9]/g, "");
+        setMatricula(apenasNumeros);
+    };
+
 
     return (
-        <div className="w-100 bg-dark text-light d-flex justify-content-center flex-column align-items-center" style={{
-            height: '100vh'
-        }}>
-            <form onSubmit={handleLogin} className="w-25">
-                <h2>Login</h2>
-                <div className="form-floating mb-3">
-                    <input value={matricula} onChange={(e) => setMatricula(e.target.value)} type="text" className="form-control" id="floatingInput" placeholder="name@example.com" />
-                    <label htmlFor="floatingInput">Matricula</label>
-                </div>
-                <div className="form-floating mb-3">
-                    <input value={senha} onChange={(e) => setSenha(e.target.value)} type="password" className="form-control" id="floatingPassword" placeholder="Password" />
-                    <label htmlFor="floatingPassword">Senha</label>
-                </div>
-                <div className="d-grid gap-2">
-                    <button className="btn btn-primary btn-lg">login</button>
-                </div>
-            </form>
-        </div>
+        <Container>
+            <>
+                {alert ? <Alert type={alertType} message={message} /> : ''}
+                <form onSubmit={handleLogin} className="form-content p-5 rounded">
+                    <h1 className="mb-5">Login</h1>
+                    <div className="input-group input-group-lg mb-3">
+                        <span className="input-group-text" id="visible-addon"><i className="bi bi-person-circle"></i></span>
+                        <input pattern="[0-9]+" value={matricula} onChange={handleChange} type="text" className="form-control py-3" id="floatingInput" placeholder="matricula" />
+                    </div>
+                    <div className="mb-3">
+                        <div className="input-group input-group-lg mb-3">
+                            <span className="input-group-text" id="visible-addon"><i className="bi bi-shield-lock-fill"></i></span>
+                            <input
+                                value={senha}
+                                onChange={(e) => setSenha(e.target.value)}
+                                type={showSenha ? "text" : "password"}
+                                className="form-control py-3"
+                                placeholder="Senha"
+                            />
+                            <button
+                                className="btn btn-light"
+                                type="button"
+                                onClick={() => setShowSenha(!showSenha)}
+                            >
+                                <i className="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div className="d-grid gap-2">
+                        <button className="btn btn-dark btn-lg">Entrar</button>
+                    </div>
+                </form>
+            </>
+        </Container>
     )
 }
 

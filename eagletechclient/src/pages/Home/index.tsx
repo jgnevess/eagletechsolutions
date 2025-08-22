@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { handleAbrirChamado } from "../../service/chamado";
 import { useNavigate } from "react-router-dom";
+import { Usuario } from "../../service/login";
+import Container from "../../components/container";
 
 
 
@@ -11,40 +13,38 @@ const NovoChamado = () => {
 
     const navigate = useNavigate();
 
+    const u = JSON.parse(sessionStorage.getItem("usuario")!) as Usuario;
+
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        handleAbrirChamado({titulo: titulo, descricao: descricao}).then(response => {
+        handleAbrirChamado({ titulo: titulo, descricao: descricao }).then(response => {
             navigate(`/chat/${response.numeroChamado}`)
         })
     }
 
     return (
-        <div className="w-100 bg-dark text-light d-flex justify-content-center flex-column align-items-center" style={{
-            height: '100vh'
-        }}>
-            <form onSubmit={handleSubmit} className="w-50">
-                <div className="mb-3">
-                    <label htmlFor="exampleFormControlInput1" className="form-label">Titulo</label>
-                    <input type="text" className="form-control bg-dark text-light" id="exampleFormControlInput1"
-                        value={titulo} onChange={(e) => setTitulo(e.target.value)}
-                        required={true}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="exampleFormControlTextarea1" className="form-label">Descrição do chamado</label>
-                    <textarea className="form-control bg-dark text-light" id="exampleFormControlTextarea1" style={{
-                        resize: 'none',
-                        height: '35vh'
-                    }}
-                    required={true}
-                    value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
-                </div>
-                <div className="mb-3">
-                    <button type="submit" className="btn btn-dark">Abrir Chamado</button>
-                </div>
-            </form>
-        </div>
+        <Container>
+            <div className="form-content p-5 rounded">
+                <h1>Página protegida</h1>
+                <h4>Se você entrou nessa página tem um login com as credenciais válidas</h4>
+
+                <h3>Dados:</h3>
+                <ul className="text-start display-6">
+                    <li>Matricula: {u.matricula}</li>
+                    <li>Nome: {u.nomeCompleto}</li>
+                    <li>Email: {u.email}</li>
+                    <li>Telefone: {u.telefone}</li>
+                    <li>Função: {u.funcao}</li>
+                </ul>
+
+                <button className="btn btn-dark" onClick={() => {
+                    sessionStorage.clear();
+                    window.location.href = '/'
+                }}>Sair</button>
+            </div>
+        </Container>
     )
 }
 

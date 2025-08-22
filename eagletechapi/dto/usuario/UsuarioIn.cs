@@ -10,11 +10,14 @@ namespace eagletechapi.dto.usuario
 {
     public class UsuarioIn
     {
+        [Required]
         public string NomeCompleto { get; set; } = string.Empty;
-        [StringLength(40, MinimumLength = 12, ErrorMessage = "A senha deve ter entre 12 e 40 caracteres")]
         public string Senha { get; set; } = string.Empty;
+        [Required]
         public string Telefone { get; set; } = string.Empty;
+        [Required]
         public Funcao Funcao { get; set; } = Funcao.SOLICITANTE;
+        [Required]
         public string Email { get; set; } = string.Empty;
 
     }

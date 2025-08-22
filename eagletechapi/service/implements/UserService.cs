@@ -17,10 +17,21 @@ namespace eagletechapi.service.implements
 
         private readonly AppDbContext _context = context;
 
-        public async Task<UsuarioOut?> AlterarSenha(int matricula, string novaSenha)
+        public async Task<UsuarioOut?> AlterarSenha(SimplePasswordUpdate simplePasswordUpdate)
         {
+            int matricula = simplePasswordUpdate.Matricula;
+            if (!simplePasswordUpdate.SenhaNova.Equals(simplePasswordUpdate.ConfirmacaoNova)) {
+                throw new Exception("Senhas não são iguais");
+            }
+            string novaSenha = simplePasswordUpdate.SenhaNova;
+
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Matricula == matricula) ?? throw new Exception("Usuario não encontrado");
             usuario.Senha = BCrypt.Net.BCrypt.HashPassword(novaSenha);
+            usuario.firstLogin = false;
+
+            var validationContext = new ValidationContext(usuario);
+            Validator.ValidateObject(usuario, validationContext, true);
+
             _context.Update(usuario);
             await _context.SaveChangesAsync();
             return new UsuarioOut(usuario);
@@ -37,6 +48,10 @@ namespace eagletechapi.service.implements
             if (!novaSenha.Equals(passwordUpdate.ConfirmacaoNova)) throw new Exception("Senhas não são iguais");
             usuario.Senha = BCrypt.Net.BCrypt.HashPassword(novaSenha);
             usuario.firstLogin = false;
+
+            var validationContext = new ValidationContext(usuario);
+            Validator.ValidateObject(usuario, validationContext, true);
+
             _context.Update(usuario);
             await _context.SaveChangesAsync();
             return new UsuarioOut(usuario);

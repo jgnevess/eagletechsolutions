@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace eagletechapi.dto.usuario
 {
-    public class PasswordUpdate
+    public class SimplePasswordUpdate
     {
         public int Matricula { get; set; } = 0;
-        public string SenhaAntiga { get; set; } = string.Empty;
-
         [StringLength(40, MinimumLength = 12, ErrorMessage = "A senha deve ter entre 12 e 40 caracteres")]
         [
             RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$",
@@ -19,10 +17,9 @@ namespace eagletechapi.dto.usuario
         public string SenhaNova { get; set; } = string.Empty;
         public string ConfirmacaoNova { get; set; } = string.Empty;
 
-        public PasswordUpdate(int Matricula, string SenhaAntiga, string SenhaNova, string ConfirmacaoNova)
+        public SimplePasswordUpdate(int Matricula, string SenhaNova, string ConfirmacaoNova)
         {
             this.Matricula = Matricula;
-            this.SenhaAntiga = SenhaAntiga;
             this.SenhaNova = SenhaNova;
             this.ConfirmacaoNova = ConfirmacaoNova;
         }
