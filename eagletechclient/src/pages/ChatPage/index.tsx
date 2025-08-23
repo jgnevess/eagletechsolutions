@@ -26,7 +26,7 @@ const ChatPage = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-            const res = await handleChatbot(text, Number.parseInt(param.numeroChamado!));
+            await handleChatbot(text, Number.parseInt(param.numeroChamado!));
 
             const messagesResponse = await handleMessages(Number.parseInt(param.numeroChamado!));
             setMsg(messagesResponse);

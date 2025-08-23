@@ -20,7 +20,7 @@ const LoginPage = () => {
         event.preventDefault();
 
         handleLoginAsync(matricula, senha).then(res => {
-            if (res.status == 200) {
+            if (res.status === 200) {
                 const data = res.LoginResposta as LoginResposta
                 sessionStorage.setItem("token", data.Token);
                 sessionStorage.setItem("role", data.Role);
@@ -39,10 +39,14 @@ const LoginPage = () => {
                         return navigate('/tec')
                     }
 
+                    if(data.Role === "SOLICITANTE") {
+                        return navigate('/sol');
+                    }
+                    
                     return navigate('/');
                 }
 
-            } else if (res.status == 400) {
+            } else if (res.status === 400) {
                 const data = res.LoginResposta as Error
                 setMessage(data.Error)
                 setAlert(true)

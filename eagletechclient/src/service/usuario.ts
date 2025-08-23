@@ -1,8 +1,7 @@
 import axios, { AxiosError } from "axios";
 
-const apiUrl = "http://0.0.0.0:5000/api/Usuario"
-// const apiUrl = "http://18.222.140.8:5000/api/Usuario"
-
+const apiUrl = `${process.env.REACT_APP_API_URL}api/Usuario
+`
 interface SimplePasswordUpdate {
     matricula: number
     senhaNova: string

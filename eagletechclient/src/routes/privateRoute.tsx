@@ -1,5 +1,6 @@
 import React, { JSX, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import NaoAutorizado from "../pages/naoautorizado";
 
 interface Props {
     children: JSX.Element;
@@ -37,8 +38,12 @@ const PrivateRouter = ({ children, roles }: Props) => {
         )
     }
 
-    if (!role || !roles.includes(role)) {
+    if (!role) {
         return <Navigate to="/login" replace />;
+    }
+
+    if (!roles.includes(role)) {
+        return <NaoAutorizado />;
     }
 
     return children;

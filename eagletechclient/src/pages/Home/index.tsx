@@ -6,7 +6,7 @@ import Container from "../../components/container";
 
 
 
-const NovoChamado = () => {
+const AboutUser = () => {
 
     const [titulo, setTitulo] = useState('');
     const [descricao, setDescricao] = useState('');
@@ -41,11 +41,11 @@ const NovoChamado = () => {
 
                 <button className="btn btn-dark" onClick={() => {
                     sessionStorage.clear();
-                    window.location.href = '/'
+                    window.location.href = '/login'
                 }}>Sair</button>
             </div>
         </Container>
     )
 }
 
-export default NovoChamado;
+export default AboutUser;

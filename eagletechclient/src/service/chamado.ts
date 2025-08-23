@@ -11,8 +11,8 @@ interface ChamadoAberto {
     descricao: string
 }
 
-// const apiUrl = "http://0.0.0.0:5000/api/Chamados"
-const apiUrl = "http://18.222.140.8:5000/api/Chamados"
+const apiUrl = `${process.env.REACT_APP_API_URL}api/Chamados`
+
 
 const handleAbrirChamado = async (chamado: Chamado): Promise<ChamadoAberto> => {
     const response = await axios.post<ChamadoAberto>(`${apiUrl}`, chamado);
