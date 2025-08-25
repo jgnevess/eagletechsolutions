@@ -227,13 +227,9 @@ namespace eagletechapi.test.service
         [Fact]
         public async Task FindUsersByNameShouldNull()
         {
-
             var context = GetInMemoryDb();
             var service = new UserService(context);
-
-            var res = await service.BuscarUsuario("joao");
-
-            Assert.Null(res);
+            await Assert.ThrowsAsync<Exception>(() => service.BuscarUsuario("joao"));
         }
 
         [Fact]

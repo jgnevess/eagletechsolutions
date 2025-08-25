@@ -13,10 +13,6 @@ namespace eagletechapi.Controllers
     [Route("api/[controller]")]
     public class UsuarioController(IUserService service) : ControllerBase
     {
-        private readonly IUserService _service = service;
-
-
-
         [HttpPut("nova-senha")]
         public async Task<IActionResult> AlterarSenha([FromBody] SimplePasswordUpdate simplePasswordUpdate)
         {
@@ -36,7 +32,7 @@ namespace eagletechapi.Controllers
             }
             try
             {
-                var res = await _service.AlterarSenha(simplePasswordUpdate);
+                var res = await service.AlterarSenha(simplePasswordUpdate);
                 return Ok(res);
 
             }

@@ -1,30 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using eagletechapi.Contexts;
 using eagletechapi.http;
 using eagletechapi.models;
-using eagletechapi.models.chamado;
 using Microsoft.EntityFrameworkCore;
 
-namespace eagletechapi.services
+namespace eagletechapi.service.implements
 {
-    public class ChatbotService
+    public class ChatbotService(ClientHttp clientHttp, IConfiguration config, AppDbContext context)
     {
-        private readonly string API_KEY;
-        private readonly string API_URL;
-        private readonly ClientHttp _http;
-        private readonly AppDbContext _context;
-
-        public ChatbotService(ClientHttp clientHttp, IConfiguration config, AppDbContext context)
-        {
-            this._http = clientHttp;
-            this.API_KEY = config["Gemini:ApiKey"]!;
-            this.API_URL = config["Gemini:ApiUrl"]!;
-            this._context = context;
-        }
+        private readonly string _apiKey = config["Gemini:ApiKey"]!;
+        private readonly string _apiUrl = config["Gemini:ApiUrl"]!;
 
         public async Task<Chatbot> CriarChatbot()
         {
@@ -33,20 +18,20 @@ namespace eagletechapi.services
                 Conversation = new List<Message>()
             };
 
-            var res = await _context.AddAsync(chatbot);
-            await _context.SaveChangesAsync();
+            var res = await context.AddAsync(chatbot);
+            await context.SaveChangesAsync();
             return res.Entity;
         }
 
         public async Task<Chatbot> Conversation(long numeroChamado)
         {
-            var res = await _context.Chatbots.Include(c => c.Conversation).FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+            var res = await context.Chatbots.Include(c => c.Conversation).FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
             return res ?? throw new Exception();
         }
 
         public async Task<IEnumerable<Message>> Conversation(long numeroChamado, ChatbotPart chatbotPart)
         {
-            var chatbot = await _context.Chatbots
+            var chatbot = await context.Chatbots
                 .Include(c => c.Conversation)
                 .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
 
@@ -132,8 +117,8 @@ namespace eagletechapi.services
                 await ChatResponse(chatbotIn, chatbot);
             }
 
-            _context.Update(chatbot);
-            await _context.SaveChangesAsync();
+            context.Update(chatbot);
+            await context.SaveChangesAsync();
 
             return chatbot.Conversation;
         }
@@ -141,7 +126,7 @@ namespace eagletechapi.services
 
         private async Task ChatResponse(ChatbotIn chatbotIn, Chatbot chatbot)
         {
-            var response = await _http.Enviar(API_URL, chatbotIn, API_KEY);
+            var response = await clientHttp.Enviar(_apiUrl, chatbotIn, _apiKey);
 
             var chatbotOut = await response.Content.ReadFromJsonAsync<ChatbotOut>();
             var respostaTexto = chatbotOut?.candidates?.FirstOrDefault()?.content?.parts?.FirstOrDefault()?.text;

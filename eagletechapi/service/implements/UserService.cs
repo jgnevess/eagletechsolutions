@@ -67,14 +67,15 @@ namespace eagletechapi.service.implements
         public async Task<UsuarioOut?> BuscarUsuario(string nome)
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.NomeCompleto.Contains(nome, StringComparison.CurrentCultureIgnoreCase));
-            if (usuario == null) return null;
-            return new UsuarioOut(usuario);
+            return usuario == null ? throw new Exception() : new UsuarioOut(usuario);
         }
 
         public async Task<UsuarioOut> CadastrarUsuario(UsuarioIn usuarioIn)
         {
-            Usuario usuario = new(usuarioIn, "Senhapadrao1*");
-            usuario.firstLogin = true;
+            Usuario usuario = new(usuarioIn, "Senhapadrao1*")
+            {
+                firstLogin = true
+            };
 
             var validationContext = new ValidationContext(usuario);
             Validator.ValidateObject(usuario, validationContext, true);

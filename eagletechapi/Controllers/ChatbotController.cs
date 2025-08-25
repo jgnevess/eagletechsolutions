@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using eagletechapi.http;
 using eagletechapi.models;
-using eagletechapi.services;
+using eagletechapi.service.implements;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eagletechapi.Controllers;

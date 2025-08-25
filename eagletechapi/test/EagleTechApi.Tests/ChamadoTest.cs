@@ -1,28 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using eagletechapi.Contexts;
 using eagletechapi.dto.chamado;
 using eagletechapi.dto.usuario;
 using eagletechapi.entity.chamado.enums;
 using eagletechapi.entity.usuario;
-using eagletechapi.http;
+using eagletechapi.models.chamado.enums;
 using eagletechapi.models.usuario;
-using eagletechapi.service;
-using eagletechapi.services;
+using eagletechapi.service.implements;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using Microsoft.Extensions.Configuration;
-using eagletechapi.models.chamado.enums;
 
-
-namespace EagleTechApi.Tests
+namespace eagletechapi.test.EagleTechApi.Tests
 {
     public class ChamadoTest
     {
 
-        private ChamadoIn CriarChamado(Usuario usuario)
+        private static ChamadoIn CriarChamado(Usuario usuario)
         {
             var chamadoIn = new ChamadoIn()
             {
@@ -34,7 +26,7 @@ namespace EagleTechApi.Tests
             return chamadoIn;
         }
 
-        private AppDbContext GetInMemoryDb()
+        private static AppDbContext GetInMemoryDb()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -42,43 +34,41 @@ namespace EagleTechApi.Tests
             return new AppDbContext(options);
         }
 
-        private UsuarioIn CriarUsuario()
+        private static UsuarioIn CriarUsuarioSolicitante()
         {
             UsuarioIn usuarioIn = new()
             {
-                NomeCompleto = "João Silva",
+                NomeCompleto = "João Sol",
                 Senha = "SenhaSuperDificil123*",
                 Telefone = "16993000000",
                 Funcao = Funcao.SOLICITANTE,
-                Email = "joao@testeemail.com"
+                Email = "joao@sol.com"
             };
             return usuarioIn;
         }
-
-        private IConfiguration CriarConfig()
+        
+        private static UsuarioIn CriarUsuarioTecnico()
         {
-            var inMemorySettings = new Dictionary<string, string?>
+            UsuarioIn usuarioIn = new()
             {
-                {"Gemini:ApiKey", "fake-key"},
-                {"Gemini:ApiUrl", "https://fake-url.com"}
+                NomeCompleto = "João Tec",
+                Senha = "SenhaSuperDificil123*",
+                Telefone = "16993000000",
+                Funcao = Funcao.TECNICO,
+                Email = "joao@tec.com"
             };
-
-            return new ConfigurationBuilder()
-                .AddInMemoryCollection(inMemorySettings!)
-                .Build();
+            return usuarioIn;
         }
-
-
+        
         [Fact]
         public async Task CreateChamadoShouldReturnSuccess()
         {
-            var usuario = CriarUsuario();
+            var usuario = CriarUsuarioSolicitante();
             var context = GetInMemoryDb();
             var u = new Usuario(usuario);
             var us = context.Usuarios.Add(u);
             await context.SaveChangesAsync();
-            var chatbotService = new ChatbotService(new ClientHttp(), CriarConfig(), context);
-            var service = new ChamadoService(context, chatbotService);
+            var service = new ChamadoService(context);
 
             var res = await service.AbrirChamado(CriarChamado(us.Entity));
 
@@ -86,10 +76,333 @@ namespace EagleTechApi.Tests
             Assert.Equal("Internet lenta", res.Titulo);
             Assert.Equal("Minha internet está lenta", res.Descricao);
             Assert.Equal(Categoria.REDE, res.Categoria);
-            Assert.Equal("João Silva", res.Solicitante.NomeCompleto);
+            Assert.Equal("João Sol", res.Solicitante.NomeCompleto);
             Assert.Equal(Status.ABERTO, res.Status);
-            Assert.NotNull(res.Abertura);
+        }
 
+        [Fact]
+        public async Task BuscarChamadoShouldReturnSuccess()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            var res = await service.BuscarChamado(1);
+            Assert.NotNull(res);
+            Assert.Equal(Status.ABERTO, res.Status);
+            Assert.Equal(u, res.Solicitante);
+        }
+        
+        [Fact]
+        public async Task BuscarChamadoShouldThrowException()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await Assert.ThrowsAsync<Exception>(() => service.BuscarChamado(1));
+        }
+
+        [Fact]
+        public async Task BuscarChamadosShouldReturnList()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            var res = await service.BuscarChamadosSolicitante();
+            
+            Assert.Single(res);
+        }
+        
+        [Fact]
+        public async Task BuscarChamadosShouldReturnAEmptyList()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+            
+            var res = await service.BuscarChamadosSolicitante();
+            
+            Assert.Empty(res);
+        }
+        
+        [Fact]
+        public async Task BuscarChamadosComStatusShouldReturnList()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            var res = await service.BuscarChamadosSolicitante(Status.ABERTO);
+            Assert.Single(res);
+            Assert.Equal(Status.ABERTO, res.First().Status);
+        }
+        
+        [Fact]
+        public async Task BuscarChamadosComStatusEUsuarioShouldReturnList()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            var res = await service.BuscarChamadosSolicitante(1, Status.ABERTO);
+            
+            Assert.Single(res);
+            Assert.Equal(Status.ABERTO, res.First().Status);
+            Assert.Equal(u, res.First().Solicitante);
+        }
+        
+        [Fact]
+        public async Task BuscarChamadosComStatusEUsuarioEAberturaShouldReturnList()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            var res = await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            var resTest = await service.BuscarChamadosSolicitante(1, Status.ABERTO, res.Abertura);
+            
+            Assert.Single(resTest);
+            Assert.Equal(Status.ABERTO, resTest.First().Status);
+            Assert.Equal(u, resTest.First().Solicitante);
+            Assert.Equal(res.Abertura, resTest.First().Abertura);
+        }
+        
+        [Fact]
+        public async Task UpdateChamadoShouldReturnSuccess()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            var chamado = CriarChamado(us.Entity);
+            chamado.Titulo = "Novo Titulo";
+            chamado.Descricao = "Nova Descricao";
+            chamado.Categoria = Categoria.BANCO_DE_DADOS;
+            var res = await service.EditarChamado(1, chamado);
+
+            Assert.NotNull(res);
+            Assert.Equal("Novo Titulo", res.Titulo);
+            Assert.Equal("Nova Descricao", res.Descricao);
+            Assert.Equal(Categoria.BANCO_DE_DADOS, res.Categoria);
+            Assert.Equal("João Sol", res.Solicitante.NomeCompleto);
+            Assert.Equal(Status.ABERTO, res.Status);
+        }
+        
+        [Fact]
+        public async Task UpdateChamadoShouldThrowExeption()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var us = context.Usuarios.Add(u);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            var chamado = CriarChamado(us.Entity);
+            chamado.Titulo = "Novo Titulo";
+            chamado.Descricao = "Nova Descricao";
+            chamado.Categoria = Categoria.BANCO_DE_DADOS;
+            await Assert.ThrowsAsync<Exception>(() => service.EditarChamado(2, chamado));
+        }
+        
+        [Fact]
+        public async Task AceitarChamadoShouldReturnSuccess()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var tec = CriarUsuarioTecnico();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var ut = new Usuario(tec);
+            var us = context.Usuarios.Add(u);
+            var tecE = context.Usuarios.Add(ut);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            var res = await service.AceitarChamado(1, tecE.Entity.Matricula);
+            
+            Assert.NotNull(res);
+            Assert.Equal(Status.EM_ANDAMENTO, res.Status);
+            Assert.Equal(2, res.Tecnico.Matricula);
+        }
+        
+        [Fact]
+        public async Task AceitarChamadoShouldThrowExeption()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var tec = CriarUsuarioTecnico();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var ut = new Usuario(tec);
+            var us = context.Usuarios.Add(u);
+            var tecE = context.Usuarios.Add(ut);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            await Assert.ThrowsAsync<Exception>(() => service.AceitarChamado(99, tecE.Entity.Matricula));
+        }
+        
+        [Fact]
+        public async Task FecharChamadoShouldReturnSuccess()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var tec = CriarUsuarioTecnico();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var ut = new Usuario(tec);
+            var us = context.Usuarios.Add(u);
+            var tecE = context.Usuarios.Add(ut);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            await service.AceitarChamado(1, tecE.Entity.Matricula);
+            
+            var res = await service.FecharChamado(1, tecE.Entity.Matricula);
+            
+            Assert.NotNull(res);
+            Assert.Equal(Status.FECHADO, res.Status);
+            Assert.Equal(2, res.Tecnico.Matricula);
+        }
+        
+        [Fact]
+        public async Task FecharChamadoShouldThrowExeption()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var tec = CriarUsuarioTecnico();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var ut = new Usuario(tec);
+            var us = context.Usuarios.Add(u);
+            var tecE = context.Usuarios.Add(ut);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            
+            await Assert.ThrowsAsync<Exception>(() => service.FecharChamado(1, tecE.Entity.Matricula));
+        }
+        
+        [Fact]
+        public async Task DeletarChamadoChamadoShouldThrowExeption()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var tec = CriarUsuarioTecnico();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var ut = new Usuario(tec);
+            var us = context.Usuarios.Add(u);
+            var tecE = context.Usuarios.Add(ut);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            await service.AceitarChamado(1, tecE.Entity.Matricula);
+            
+            await Assert.ThrowsAsync<Exception>(() => service.DeletarChamado(1));
+        }
+        
+        [Fact]
+        public async Task DeletarChamadoChamadoShouldReturnAEmptyList()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var tec = CriarUsuarioTecnico();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var ut = new Usuario(tec);
+            var us = context.Usuarios.Add(u);
+            var tecE = context.Usuarios.Add(ut);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            await service.AbrirChamado(CriarChamado(us.Entity));
+            await service.DeletarChamado(1);
+            
+            Assert.Empty(context.Chamados);
+        }
+        
+        [Fact]
+        public async Task DeletarChamadoChamadoShouldThrowAExeption()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var tec = CriarUsuarioTecnico();
+            var context = GetInMemoryDb();
+            var u = new Usuario(usuario);
+            var ut = new Usuario(tec);
+            var us = context.Usuarios.Add(u);
+            var tecE = context.Usuarios.Add(ut);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+            
+            await Assert.ThrowsAsync<Exception>(() => service.DeletarChamado(1));
+        }
+        
+        [Fact]
+        public async Task BuscarChamadosComStatusEUsuarioTecnicoEAberturaShouldReturnList()
+        {
+            var usuario = CriarUsuarioSolicitante();
+            var context = GetInMemoryDb();
+            var tec = CriarUsuarioTecnico();
+            var u = new Usuario(usuario);
+            var ut = new Usuario(tec);
+            var us = context.Usuarios.Add(u);
+            var tecE = context.Usuarios.Add(ut);
+            await context.SaveChangesAsync();
+            var service = new ChamadoService(context);
+
+            var res = await service.AbrirChamado(CriarChamado(us.Entity));
+
+            await service.AceitarChamado(1, tecE.Entity.Matricula);
+            
+            var resTest = await service.BuscarChamadosTecnico(tecE.Entity.Matricula, Status.EM_ANDAMENTO, res.Abertura);
+            
+            Assert.Single(resTest);
+            Assert.Equal(Status.EM_ANDAMENTO, resTest.First().Status);
+            Assert.Equal(u, resTest.First().Solicitante);
+            Assert.Equal(res.Abertura, resTest.First().Abertura);
         }
     }
+    
+    
 }

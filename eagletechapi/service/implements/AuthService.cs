@@ -36,9 +36,9 @@ namespace eagletechapi.service.implements
             };
 
 
-            string API_KEY = _config["Jwt:Key"] ?? "";
+            var apiKey = _config["Jwt:Key"] ?? "";
 
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(API_KEY));
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(apiKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -53,18 +53,10 @@ namespace eagletechapi.service.implements
                 { "Token", new JwtSecurityTokenHandler().WriteToken(token) },
                 { "Role", usuario.Funcao.ToString() },
                 { "Matricula", usuario.Matricula },
-                { "usuario", new UsuarioOut(usuario) }
+                { "usuario", new UsuarioOut(usuario) },
+                { "FirstLogin", usuario.firstLogin }
             };
 
-            if (usuario.firstLogin)
-            {
-                response.Add("FirstLogin", true);
-            }
-            else
-            {
-                response.Add("FirstLogin", false);
-            }
-            
             return response;
         }
     }

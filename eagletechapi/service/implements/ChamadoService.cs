@@ -1,114 +1,140 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using eagletechapi.Contexts;
 using eagletechapi.dto.chamado;
+using eagletechapi.entity.usuario;
 using eagletechapi.models;
 using eagletechapi.models.chamado;
 using eagletechapi.models.chamado.enums;
 using eagletechapi.service.interfaces;
-using eagletechapi.services;
 using Microsoft.EntityFrameworkCore;
 
-namespace eagletechapi.service
+namespace eagletechapi.service.implements
 {
-    public class ChamadoService(AppDbContext context, ChatbotService chatbotService) : IChamadoService
+    public class ChamadoService(AppDbContext context) : IChamadoService
     {
-        private readonly AppDbContext _context = context;
-        private readonly ChatbotService _chatbot = chatbotService;
-
-        public async Task<Chamado> CriarChamado(ChamadoIn chamadoIn)
-        {
-            Chatbot chatbot = await _chatbot.CriarChatbot();
-
-            Chamado chamado = new()
-            {
-                Titulo = chamadoIn.Titulo,
-                Descricao = chamadoIn.Descricao,
-                Chatbot = chatbot
-            };
-            var res = await _context.AddAsync(chamado);
-            await _context.SaveChangesAsync();
-
-            chatbot.NumeroChamado = res.Entity.NumeroChamado;
-            _context.Chatbots.Update(chatbot);
-
-            await _context.SaveChangesAsync();
-
-            return chamado;
-        }
-
-        public async Task<Chamado> BuscarTodosPorChamados(long numeroChamado)
-        {
-            return await _context.Chamados.Include(c => c.Chatbot)
-                .ThenInclude(ch => ch.Conversation)
-                .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception();
-        }
-
         public async Task<ChamadoOut> AbrirChamado(ChamadoIn chamadoIn)
         {
-            var solicitante = await _context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(chamadoIn.UsuarioId));
-            Chamado chamado = new Chamado(chamadoIn, solicitante!);
+            var solicitante = await context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(chamadoIn.UsuarioId));
+            var chamado = new Chamado(chamadoIn, solicitante!);
 
             var validationContext = new ValidationContext(chamado);
             Validator.ValidateObject(chamado, validationContext, true);
 
-            var res = await _context.Chamados.AddAsync(chamado);
-            await _context.SaveChangesAsync();
+            var res = await context.Chamados.AddAsync(chamado);
+            await context.SaveChangesAsync();
 
             return new ChamadoOut(res.Entity);
         }
 
-        public Task<ChamadoOut?> BuscarChamado(int numeroChamado)
+        public async Task<ChamadoOut?> BuscarChamado(int numeroChamado)
         {
-            throw new NotImplementedException();
+            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+            return new ChamadoOut(res ?? throw new Exception());
         }
 
-        public Task<IEnumerable<ChamadoOut>> BuscarChamados()
+        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante()
         {
-            throw new NotImplementedException();
+            return await context.Chamados.Select(c => new ChamadoOut(c)).ToListAsync();
         }
 
-        public Task<IEnumerable<ChamadoOut>> BuscarChamados(Status status)
+        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(Status status)
         {
-            throw new NotImplementedException();
+            return await context.Chamados.Where(c => c.Status.Equals(status)).Select(c => new ChamadoOut(c)).ToListAsync();
         }
 
-        public Task<IEnumerable<ChamadoOut>> BuscarChamados(int usuarioId, Status status)
+        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status)
         {
-            throw new NotImplementedException();
+            return await context.Chamados
+                .Where(c => c.Status.Equals(status) && c.Solicitante.Matricula.Equals(usuarioId))
+                .Select(c => new ChamadoOut(c))
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<ChamadoOut>> BuscarChamados(int usuarioId, Status status, DateTime abertura)
+        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status, DateTime abertura)
         {
-            throw new NotImplementedException();
+            return await context.Chamados
+                .Where(c => c.Status.Equals(status) && c.Solicitante.Matricula.Equals(usuarioId) && c.Abertura.Equals(abertura))
+                .Select(c => new ChamadoOut(c))
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<ChamadoOut>> BuscarChamados(int usuarioId, Status status, DateTime abertura, DateTime Fechamento)
+        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status, DateTime abertura, DateTime fechamento)
         {
-            throw new NotImplementedException();
+            return await context.Chamados
+                .Where(c => c.Status.Equals(status) &&
+                            c.Solicitante.Matricula.Equals(usuarioId) && 
+                            c.Abertura.Equals(abertura) &&
+                            c.Fechamento.Equals(fechamento))
+                .Select(c => new ChamadoOut(c))
+                .ToListAsync();
         }
 
-        public Task<ChamadoOut?> EditarChamado(int numeroChamado, ChamadoIn chamadoIn)
+        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status)
         {
-            throw new NotImplementedException();
+            return await context.Chamados
+                .Where(c => c.Status.Equals(status) && c.Tecnico.Matricula.Equals(usuarioId))
+                .Select(c => new ChamadoOut(c))
+                .ToListAsync();
         }
 
-        public Task<ChamadoOut?> AceitarChamado(int numeroChamado, int tecnicoId)
+        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status, DateTime abertura)
         {
-            throw new NotImplementedException();
+            return await context.Chamados
+                .Where(c => c.Status.Equals(status) && c.Tecnico.Matricula.Equals(usuarioId) && c.Abertura.Equals(abertura))
+                .Select(c => new ChamadoOut(c))
+                .ToListAsync();
         }
 
-        public Task<ChamadoOut?> FecharChamado(int numeroChamado, int tecnicoId)
+        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status, DateTime abertura, DateTime fechamento)
         {
-            throw new NotImplementedException();
+            return await context.Chamados
+                .Where(c => c.Status.Equals(status) &&
+                            c.Tecnico.Matricula.Equals(usuarioId) && 
+                            c.Abertura.Equals(abertura) &&
+                            c.Fechamento.Equals(fechamento))
+                .Select(c => new ChamadoOut(c))
+                .ToListAsync();
         }
 
-        public Task DeletarChamado(int numeroChamado)
+        public async Task<ChamadoOut?> EditarChamado(int numeroChamado, ChamadoIn chamadoIn)
         {
-            throw new NotImplementedException();
+            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+            if(res == null) throw new Exception();
+            res.Categoria = chamadoIn.Categoria;
+            res.Descricao = chamadoIn.Descricao;
+            res.Titulo = chamadoIn.Titulo;
+            context.Update(res);
+            await context.SaveChangesAsync();
+            return new ChamadoOut(res);
+        }
+
+        public async Task<ChamadoOut?> AceitarChamado(int numeroChamado, int tecnicoId)
+        {
+            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception();
+            var tec = context.Usuarios.FirstOrDefault(u => u.Matricula.Equals(tecnicoId)) ?? throw new Exception();
+            if(tec.Funcao != Funcao.TECNICO) throw new Exception();
+            res.AceitarChamado(tec);
+            context.Chamados.Update(res);
+            await context.SaveChangesAsync();
+            return new ChamadoOut(res);
+        }
+
+        public async Task<ChamadoOut?> FecharChamado(int numeroChamado, int tecnicoId)
+        {
+            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
+            if (res is not { Status: Status.EM_ANDAMENTO }) throw new Exception();
+            res.FecharChamado();
+            context.Chamados.Update(res);
+            await context.SaveChangesAsync();
+            return new ChamadoOut(res);
+        }
+
+        public async Task DeletarChamado(int numeroChamado)
+        {
+            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception();
+            if(res.Status != Status.ABERTO)  throw new Exception();
+            context.Chamados.Remove(res);
+            await context.SaveChangesAsync();
         }
     }
 }

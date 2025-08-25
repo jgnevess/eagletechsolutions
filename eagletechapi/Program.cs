@@ -6,7 +6,6 @@ using eagletechapi.http;
 using eagletechapi.service;
 using eagletechapi.service.implements;
 using eagletechapi.service.interfaces;
-using eagletechapi.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

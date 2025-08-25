@@ -41,7 +41,7 @@ namespace eagletechapi.Controllers
         }
 
         [HttpPost("register")]
-        // [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Register([FromBody] UsuarioIn usuarioIn)
         {
             if (!ModelState.IsValid) return BadRequest(new Dictionary<string, string>()
@@ -64,6 +64,7 @@ namespace eagletechapi.Controllers
         }
 
         [HttpPut("update-password")]
+        [Authorize]
         public async Task<IActionResult> UpdatePassword([FromBody] SimplePasswordUpdate passwordUpdate)
         {
             var res = await _userService.AlterarSenha(passwordUpdate);

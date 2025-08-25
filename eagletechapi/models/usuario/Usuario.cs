@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using eagletechapi.dto.usuario;
 using eagletechapi.entity.usuario;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +18,7 @@ namespace eagletechapi.models.usuario
         public string NomeCompleto { get; set; }
 
         [Required]
+        [JsonIgnore]
         public string Senha { get; set; }
         [Required]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "O telefone deve ter 11 caracteres")]

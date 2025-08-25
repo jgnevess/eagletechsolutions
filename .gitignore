@@ -10,6 +10,7 @@ bin/
 obj/
 out/
 publish/
+aws
 
 # ASP.NET
 appsettings*.json
@@ -38,6 +39,7 @@ coverage/
 .env.development.local
 .env.test.local
 .env.production.local
+*sql
 
 # IDEs
 .idea/
