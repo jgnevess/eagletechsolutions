@@ -11,12 +11,12 @@ import TecnicoDashboard from "../pages/tecnicodashboard";
 import SolicitanteDashboard from "../pages/solicitantedashboard";
 
 const Routers = () => {
-    return(
+    return (
         <BrowserRouter>
             <Routes>
-                <Route path="*" element={<NotFound />}/>
-                <Route path="/chat/:numeroChamado" element={<ChatPage />}/>
-                <Route path="/login" element={<LoginPage />}/>
+                <Route path="*" element={<NotFound />} />
+                <Route path="/chat/:numeroChamado" element={<ChatPage />} />
+                <Route path="/login" element={<LoginPage />} />
 
                 <Route path="/about" element={
                     <PrivateRouter roles={["SOLICITANTE", "ADMIN", "TECNICO"]}>
@@ -46,6 +46,11 @@ const Routers = () => {
                     </PrivateRouter>
                 } />
 
+                <Route path="/" element={
+                    <PrivateRouter roles={["SOLICITANTE", "ADMIN", "TECNICO"]}>
+                        <AboutUser />
+                    </PrivateRouter>
+                } />
 
             </Routes>
         </BrowserRouter>

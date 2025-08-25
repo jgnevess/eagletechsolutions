@@ -1,5 +1,10 @@
 import axios from "axios"
 
+const headers = {
+    'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+    'Content-Type': 'application/json'
+}
+
 interface Chamado {
     titulo: string
     descricao: string
@@ -23,7 +28,8 @@ const handleBuscarChamado = async (numeroChamado: number): Promise<ChamadoAberto
     const response = await axios.get<ChamadoAberto>(`${apiUrl}/BuscarTodos`, {
         params: {
             numeroChamado: numeroChamado
-        }
+        },
+        headers: headers
     })
     return response.data;
 }

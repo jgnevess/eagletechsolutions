@@ -1,5 +1,12 @@
 import axios, { AxiosError } from "axios";
 
+const headers = () => {
+    return {
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+    }
+}
+
 export interface Resposta {
     status: number
     LoginResposta?: LoginResposta | Error
@@ -7,11 +14,11 @@ export interface Resposta {
 }
 
 export interface Usuario {
-  matricula: number;
-  nomeCompleto: string;
-  telefone: string;
-  funcao: string;
-  email: string;
+    matricula: number;
+    nomeCompleto: string;
+    telefone: string;
+    funcao: string;
+    email: string;
 }
 
 export interface LoginResposta {
@@ -29,11 +36,11 @@ export interface Error {
 export type Role = "SOLICITANTE" | "ADMIN" | "TECNICO";
 
 export interface UsuarioCadastro {
-  nomeCompleto: string;
-  senha: string;
-  telefone: string;
-  funcao: Role;
-  email: string;
+    nomeCompleto: string;
+    senha: string;
+    telefone: string;
+    funcao: Role;
+    email: string;
 }
 
 
@@ -45,8 +52,8 @@ const handleLoginAsync = async (matricula: string, senha: string): Promise<Respo
             matricula: matricula,
             senha: senha
         });
-        return { status: 200, LoginResposta: res.data};
-    } catch(err) {
+        return { status: 200, LoginResposta: res.data };
+    } catch (err) {
         const error = err as AxiosError;
         const data = error.response?.data as Error
         return { status: 400, LoginResposta: data }
@@ -54,11 +61,12 @@ const handleLoginAsync = async (matricula: string, senha: string): Promise<Respo
 }
 
 const handleRegister = async (user: UsuarioCadastro): Promise<Resposta> => {
-    console.log(user)
     try {
-        const res = await axios.post<Usuario>(`${apiUrl}/register`, user);
-        return { status: 200, CadastroResposta: res.data};
-    } catch(err) {
+        const res = await axios.post<Usuario>(`${apiUrl}/register`, user, {
+            headers: headers()
+        });
+        return { status: 200, CadastroResposta: res.data };
+    } catch (err) {
         const error = err as AxiosError;
         const data = error.response?.data as Error
         console.log(data)

@@ -34,7 +34,7 @@ const NovaSenha = () => {
                     setAlert(false)
                     setAlertType('alert alert-primary')
                     sessionStorage.clear();
-                    navigate('/login')
+                    window.location.href = '/login'
                 }, 2500)
 
             } else if (res.status === 400) {

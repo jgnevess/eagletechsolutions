@@ -30,7 +30,7 @@ const CadastrarUsuario = () => {
         handleRegister(user).then(res => {
             if (res.status === 200) {
                 const data = res.CadastroResposta as Usuario
-                setMessage(`Usuário ${data.nomeCompleto} cadastrado com sucesso`)
+                setMessage(`Usuário ${data.nomeCompleto} cadastrado com sucesso! Login com a matricula: ${data.matricula}`)
                 setAlert(true)
                 setAlertType('alert alert-success')
                 setTimeout(() => {
