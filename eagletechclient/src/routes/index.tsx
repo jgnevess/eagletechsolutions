@@ -34,6 +34,12 @@ const Routers = () => {
                     </PrivateRouter>
                 } />
 
+                <Route path="/cadastro" element={
+                    <PrivateRouter roles={["ADMIN"]}>
+                        <AdminDashboard />
+                    </PrivateRouter>
+                } />
+
                 <Route path="/sol" element={
                     <PrivateRouter roles={["SOLICITANTE"]}>
                         <SolicitanteDashboard />

@@ -9,16 +9,19 @@ const Navbar = (props: Props) => {
 
     const AdminLinks = [
         { nome: 'Usuarios', url: '/usuarios' },
-        { nome: 'Cadastro', url: '/cadastro' }
+        { nome: 'Cadastro', url: '/cadastro' },
+        { nome: 'Sair', url: '/login'}
     ]
 
     const SolicitanteLinks = [
         { nome: 'Chamados', url: '/chamados' },
-        { nome: 'Abrir Chamado', url: '/novo-chamado' }
+        { nome: 'Abrir Chamado', url: '/novo-chamado' },
+        { nome: 'Sair', url: '/login'}
     ]
 
     const TecnicoLinks = [
         { nome: 'Chamados', url: '/chamados' },
+        { nome: 'Sair', url: '/login'}
     ]
 
     const Links = props.role === "ADMIN" ? AdminLinks.map((i, k) => {
@@ -41,11 +44,6 @@ const Navbar = (props: Props) => {
         )
     }) : '';
 
-    const handleSair = () => {
-        sessionStorage.clear()
-        window.location.href = '/login'
-    }
-
     return (
         <nav className="navbar navbar-expand-lg text-light bg" style={{ height: "10vh" }}>
             <div className="container-fluid">
@@ -58,9 +56,6 @@ const Navbar = (props: Props) => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
                         {Links}
-                        <li className="nav-item">
-                            <button onClick={handleSair} className="nav-link text-light">Sair</button>
-                        </li>
                     </ul>
                 </div>
             </div>

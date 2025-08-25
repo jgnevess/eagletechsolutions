@@ -5,10 +5,10 @@ services:
     container_name: mariadb
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: Jamesppage1*&
+      MYSQL_ROOT_PASSWORD: senhasegura
       MYSQL_DATABASE: eagletechtest
       MYSQL_USER: joao
-      MYSQL_PASSWORD: Jamesppage1*&
+      MYSQL_PASSWORD: senhasegura
     ports:
       - "3306:3306"
     volumes:
@@ -30,7 +30,7 @@ services:
     environment:
       - DB_HOST=mariadb
       - DB_USER=joao
-      - DB_PASSWORD=senhaSegura
+      - DB_PASSWORD=senhasegura
       - DB_NAME=eagletechtest
       - ASPNETCORE_URLS=http://+:5000
     ports:

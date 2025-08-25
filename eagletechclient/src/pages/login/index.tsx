@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Error, handleLoginAsync, LoginResposta } from "../../service/login";
 import { useNavigate } from "react-router-dom";
 import Alert, { PropsAlert } from "../../components/alert";
@@ -16,6 +16,13 @@ const LoginPage = () => {
     const [showSenha, setShowSenha] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if(sessionStorage.length > 0) {
+            sessionStorage.clear();
+            window.location.href = '/login'
+        }
+    },[])
+
     const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -32,15 +39,15 @@ const LoginPage = () => {
                 }
                 else {
                     if(data.Role === "ADMIN") {
-                        return navigate('/admin')
+                        return navigate('/')
                     }
 
                     if(data.Role === "TECNICO") {
-                        return navigate('/tec')
+                        return navigate('/')
                     }
 
                     if(data.Role === "SOLICITANTE") {
-                        return navigate('/sol');
+                        return navigate('/');
                     }
                     
                     return navigate('/');
