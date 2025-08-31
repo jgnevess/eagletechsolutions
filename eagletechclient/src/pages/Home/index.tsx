@@ -1,32 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { handleAbrirChamado } from "../../service/chamado";
 import { useNavigate } from "react-router-dom";
 import { Usuario } from "../../service/login";
 import Container from "../../components/container";
+import { handleFirstLogin } from "../../service/firstlogin";
+import { useFirstLogin } from "../../hooks/useFirstLogin";
 
 
 
 const AboutUser = () => {
 
-    const [titulo, setTitulo] = useState('');
-    const [descricao, setDescricao] = useState('');
-
     const navigate = useNavigate();
 
     const u = JSON.parse(sessionStorage.getItem("usuario")!) as Usuario;
 
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        handleAbrirChamado({ titulo: titulo, descricao: descricao }).then(response => {
-            navigate(`/chat/${response.numeroChamado}`)
-        })
-    }
+    useFirstLogin();
 
     return (
         <Container>
-            <div className="form-content p-5 rounded">
+            <div className="form-content p-5 rounded w-75">
                 <h1>Página protegida</h1>
                 <h4>Se você entrou nessa página tem um login com as credenciais válidas</h4>
 

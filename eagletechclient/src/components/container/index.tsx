@@ -10,8 +10,9 @@ interface Props {
 const Container = (props: Props) => {
     return (
         <>
-                <Navbar role={sessionStorage.getItem("role")!}/>
-            <div className="w-100 bg text-light d-flex justify-content-center flex-column align-items-center" style={{
+            <Navbar role={sessionStorage.getItem("role")!} />
+            <div className="w-100 bg text-light d-flex flex-column align-items-center" 
+            style={{
                 height: '90vh'
             }}>
                 {props.children}

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { handleMudarSenha } from "../../service/usuario";
 import { redirect, useNavigate } from "react-router-dom";
 import Alert, { PropsAlert } from "../../components/alert";
 import Container from "../../components/container";
+import { handleFirstLogin } from "../../service/firstlogin";
 
 
 const NovaSenha = () => {
@@ -13,6 +14,10 @@ const NovaSenha = () => {
     const [message, setMessage] = useState('');
     const [alertType, setAlertType] = useState<PropsAlert["type"]>('alert alert-primary');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!handleFirstLogin()) navigate('/');
+    },[])
 
     const handleNewPassword = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

@@ -1,17 +1,17 @@
 import React from "react";
 import Container from "../../components/container";
-import { useFirstLogin } from "../../hooks/useFirstLogin";
+import { useParams } from "react-router-dom";
 
 
-const TecnicoDashboard = () => {
-    useFirstLogin();
+const Chamado = () => {
+    const param = useParams();
     return(
         <Container>
             <>
-                Tecnico
+                {param.id}
             </>
         </Container>
     )
 }
 
-export default TecnicoDashboard;
+export default Chamado

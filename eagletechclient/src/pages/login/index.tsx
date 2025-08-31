@@ -33,6 +33,7 @@ const LoginPage = () => {
                 sessionStorage.setItem("role", data.Role);
                 sessionStorage.setItem("matricula", data.Matricula.toLocaleString())
                 sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
+                sessionStorage.setItem("first", JSON.stringify(data.FirstLogin));
 
                 if (data.FirstLogin) {
                     navigate('/nova-senha')

@@ -19,7 +19,7 @@ namespace eagletechapi.Controllers
                 .Select(e => e.ErrorMessage)
                 .FirstOrDefault() ?? "Erro na validação";
         }
-        
+
         [HttpPost("abrir-chamado")]
         [Authorize(Roles = "SOLICITANTE")]
         public async Task<IActionResult> AbrirChamado(ChamadoIn chamadoIn)
@@ -31,9 +31,9 @@ namespace eagletechapi.Controllers
                     { "Error", tratarExeption(ModelState) }
                 });
             }
-            
+
             var res = await chamadoService.AbrirChamado(chamadoIn);
-            
+
             return Ok(res);
         }
 
@@ -50,49 +50,57 @@ namespace eagletechapi.Controllers
         {
             return Ok(await chamadoService.BuscarChamadosSolicitante(status));
         }
-        
+
         [Authorize(Roles = "SOLICITANTE")]
         [HttpGet("chamados-solicitante")]
         public async Task<IActionResult> BuscarChamadoPorStatusESolcitante(int solicitante, Status status)
         {
             return Ok(await chamadoService.BuscarChamadosSolicitante(solicitante, status));
         }
-        
+
         [Authorize(Roles = "SOLICITANTE")]
         [HttpGet("chamados-solicitante-abertura")]
         public async Task<IActionResult> BuscarChamadoPorStatusESolcitante(int solicitante, Status status, DateTime abertura)
         {
             return Ok(await chamadoService.BuscarChamadosSolicitante(solicitante, status, abertura));
         }
-        
+
         [Authorize(Roles = "SOLICITANTE")]
         [HttpGet("chamados-solicitante-abertura-fechamento")]
         public async Task<IActionResult> BuscarChamadoPorStatusESolcitante(int solicitante, Status status, DateTime abertura, DateTime fechamento)
         {
             return Ok(await chamadoService.BuscarChamadosSolicitante(solicitante, status, abertura, fechamento));
         }
-        
+
         // tecnico 
-        
+
         [Authorize(Roles = "TECNICO")]
         [HttpGet("chamados-tecnico")]
         public async Task<IActionResult> BuscarChamadoPorStatusETecnico(int tecnico, Status status)
         {
             return Ok(await chamadoService.BuscarChamadosTecnico(tecnico, status));
         }
-        
+
         [Authorize(Roles = "TECNICO")]
         [HttpGet("chamados-tecnico-abertura")]
         public async Task<IActionResult> BuscarChamadoPorStatusETecnico(int tecnico, Status status, DateTime abertura)
         {
             return Ok(await chamadoService.BuscarChamadosTecnico(tecnico, status, abertura));
         }
-        
+
         [Authorize(Roles = "TECNICO")]
         [HttpGet("chamados-tecnico-abertura-fechamento")]
         public async Task<IActionResult> BuscarChamadoPorStatusETecnico(int tecnico, Status status, DateTime abertura, DateTime fechamento)
         {
             return Ok(await chamadoService.BuscarChamadosTecnico(tecnico, status, abertura, fechamento));
+        }
+
+        [Authorize]
+        [HttpGet("chamado")]
+        public async Task<IActionResult> BuscarChamadoPorId(int numeroChamado)
+        {
+            var res = await chamadoService.BuscarChamado(numeroChamado);
+            return Ok(res);
         }
     }
 }

@@ -28,11 +28,15 @@ namespace eagletechapi.service.implements
 
         public async Task<ChamadoOut?> BuscarChamado(int numeroChamado)
         {
-            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
-            return new ChamadoOut(res ?? throw new Exception());
+            var res = await context.Chamados
+                .Include(c => c.Solicitante)
+                .Include(c => c.Tecnico)
+                .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception("");
+            return new ChamadoOut(res);
+
         }
 
-        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante()
+        public async Task<IEnumerable<ChamadoOut>> BuscarTodosChamados()
         {
             return await context.Chamados.Select(c => new ChamadoOut(c)).ToListAsync();
         }
@@ -45,6 +49,7 @@ namespace eagletechapi.service.implements
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status)
         {
             return await context.Chamados
+                .Include(c => c.Solicitante)
                 .Where(c => c.Status.Equals(status) && c.Solicitante.Matricula.Equals(usuarioId))
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
@@ -53,6 +58,7 @@ namespace eagletechapi.service.implements
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status, DateTime abertura)
         {
             return await context.Chamados
+                .Include(c => c.Solicitante)
                 .Where(c => c.Status.Equals(status) && c.Solicitante.Matricula.Equals(usuarioId) && c.Abertura.Equals(abertura))
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
@@ -61,8 +67,9 @@ namespace eagletechapi.service.implements
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status, DateTime abertura, DateTime fechamento)
         {
             return await context.Chamados
+                .Include(c => c.Solicitante)
                 .Where(c => c.Status.Equals(status) &&
-                            c.Solicitante.Matricula.Equals(usuarioId) && 
+                            c.Solicitante.Matricula.Equals(usuarioId) &&
                             c.Abertura.Equals(abertura) &&
                             c.Fechamento.Equals(fechamento))
                 .Select(c => new ChamadoOut(c))
@@ -72,6 +79,8 @@ namespace eagletechapi.service.implements
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status)
         {
             return await context.Chamados
+                .Include(c => c.Solicitante)
+                .Include(c => c.Tecnico)
                 .Where(c => c.Status.Equals(status) && c.Tecnico.Matricula.Equals(usuarioId))
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
@@ -80,6 +89,8 @@ namespace eagletechapi.service.implements
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status, DateTime abertura)
         {
             return await context.Chamados
+                .Include(c => c.Solicitante)
+                .Include(c => c.Tecnico)
                 .Where(c => c.Status.Equals(status) && c.Tecnico.Matricula.Equals(usuarioId) && c.Abertura.Equals(abertura))
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
@@ -88,8 +99,10 @@ namespace eagletechapi.service.implements
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status, DateTime abertura, DateTime fechamento)
         {
             return await context.Chamados
+                .Include(c => c.Solicitante)
+                .Include(c => c.Tecnico)
                 .Where(c => c.Status.Equals(status) &&
-                            c.Tecnico.Matricula.Equals(usuarioId) && 
+                            c.Tecnico.Matricula.Equals(usuarioId) &&
                             c.Abertura.Equals(abertura) &&
                             c.Fechamento.Equals(fechamento))
                 .Select(c => new ChamadoOut(c))
@@ -99,7 +112,7 @@ namespace eagletechapi.service.implements
         public async Task<ChamadoOut?> EditarChamado(int numeroChamado, ChamadoIn chamadoIn)
         {
             var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
-            if(res == null) throw new Exception();
+            if (res == null) throw new Exception();
             res.Categoria = chamadoIn.Categoria;
             res.Descricao = chamadoIn.Descricao;
             res.Titulo = chamadoIn.Titulo;
@@ -112,7 +125,7 @@ namespace eagletechapi.service.implements
         {
             var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception();
             var tec = context.Usuarios.FirstOrDefault(u => u.Matricula.Equals(tecnicoId)) ?? throw new Exception();
-            if(tec.Funcao != Funcao.TECNICO) throw new Exception();
+            if (tec.Funcao != Funcao.TECNICO) throw new Exception();
             res.AceitarChamado(tec);
             context.Chamados.Update(res);
             await context.SaveChangesAsync();
@@ -132,7 +145,7 @@ namespace eagletechapi.service.implements
         public async Task DeletarChamado(int numeroChamado)
         {
             var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception();
-            if(res.Status != Status.ABERTO)  throw new Exception();
+            if (res.Status != Status.ABERTO) throw new Exception();
             context.Chamados.Remove(res);
             await context.SaveChangesAsync();
         }

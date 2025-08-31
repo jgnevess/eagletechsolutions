@@ -9,6 +9,9 @@ import NovaSenha from "../pages/nova-senha";
 import AdminDashboard from "../pages/admindashboard";
 import TecnicoDashboard from "../pages/tecnicodashboard";
 import SolicitanteDashboard from "../pages/solicitantedashboard";
+import NovoChamado from "../pages/novo-chamado";
+import Chamados from "../pages/chamados";
+import Chamado from "../pages/chamado";
 
 const Routers = () => {
     return (
@@ -43,6 +46,24 @@ const Routers = () => {
                 <Route path="/sol" element={
                     <PrivateRouter roles={["SOLICITANTE"]}>
                         <SolicitanteDashboard />
+                    </PrivateRouter>
+                } />
+
+                <Route path="/novo-chamado" element={
+                    <PrivateRouter roles={["SOLICITANTE"]}>
+                        <NovoChamado />
+                    </PrivateRouter>
+                } />
+
+                <Route path="/chamados" element={
+                    <PrivateRouter roles={["SOLICITANTE"]}>
+                        <Chamados />
+                    </PrivateRouter>
+                } />
+
+                <Route path="/chamados/chamado/:id" element={
+                    <PrivateRouter roles={["SOLICITANTE"]}>
+                        <Chamado />
                     </PrivateRouter>
                 } />
 

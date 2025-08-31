@@ -1,9 +1,11 @@
 import React from "react";
 import Container from "../../components/container";
 import CadastrarUsuario from "../../components/cadastrarUsuario";
+import { useFirstLogin } from "../../hooks/useFirstLogin";
 
 
 const AdminDashboard = () => {
+    useFirstLogin();
     return(
         <Container>
             <>

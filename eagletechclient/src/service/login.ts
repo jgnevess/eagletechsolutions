@@ -30,6 +30,7 @@ export interface LoginResposta {
 }
 
 export interface Error {
+    status?: number
     Error: string
 }
 
@@ -69,7 +70,6 @@ const handleRegister = async (user: UsuarioCadastro): Promise<Resposta> => {
     } catch (err) {
         const error = err as AxiosError;
         const data = error.response?.data as Error
-        console.log(data)
         return { status: 500, CadastroResposta: data }
     }
 }

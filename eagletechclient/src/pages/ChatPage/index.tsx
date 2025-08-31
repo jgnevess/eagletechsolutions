@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { handleChatbot, handleMessages } from "../../service/chatbot";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { handleBuscarChamado } from "../../service/chamado";
+import { useFirstLogin } from "../../hooks/useFirstLogin";
 
 interface Response {
     id: number;
@@ -88,6 +89,8 @@ const ChatPage = () => {
             console.error("error");
         }
     };
+
+    useFirstLogin();
 
     const Msg = (msg?.conversation ?? []).map((response: Message, key) => (
         <React.Fragment key={key}>

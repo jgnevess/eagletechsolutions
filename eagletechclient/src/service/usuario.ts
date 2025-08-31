@@ -1,8 +1,10 @@
 import axios, { AxiosError } from "axios";
 
-const headers = {
-    'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
+const headers = () => {
+    return {
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+    }
 }
 
 
@@ -26,7 +28,7 @@ interface Error {
 const handleMudarSenha = async (spu: SimplePasswordUpdate): Promise<Resposta> => {
     try {
         const res = await axios.put(`${apiUrl}/nova-senha`, spu, {
-            headers: headers
+            headers: headers()
         })
         return { status: 200 };
     } catch (err) {

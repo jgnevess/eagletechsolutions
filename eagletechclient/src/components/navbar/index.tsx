@@ -49,7 +49,7 @@ const Navbar = (props: Props) => {
             <div className="container-fluid">
                 <a className="navbar-brand text-light" href={
                     props.role === "ADMIN" ? '/admin' : props.role === "SOLICITANTE" ? '/sol' : 'tec'
-                }>LOGO EAGLETECH</a>
+                }><img src="https://images.pexels.com/photos/133356/pexels-photo-133356.jpeg?_gl=1*1wipcs5*_ga*NzE3NjIyNjk5LjE3NTY1NzM3MTk.*_ga_8JE65Q40S6*czE3NTY1NzM3MTkkbzEkZzEkdDE3NTY1NzM3NDMkajM2JGwwJGgw" className="rounded" width={100} /></a>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>

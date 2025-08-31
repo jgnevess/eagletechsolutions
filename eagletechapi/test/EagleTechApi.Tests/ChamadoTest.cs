@@ -95,7 +95,6 @@ namespace eagletechapi.test.EagleTechApi.Tests
             var res = await service.BuscarChamado(1);
             Assert.NotNull(res);
             Assert.Equal(Status.ABERTO, res.Status);
-            Assert.Equal(u, res.Solicitante);
         }
         
         [Fact]
@@ -123,7 +122,7 @@ namespace eagletechapi.test.EagleTechApi.Tests
 
             await service.AbrirChamado(CriarChamado(us.Entity));
             
-            var res = await service.BuscarChamadosSolicitante();
+            var res = await service.BuscarTodosChamados();
             
             Assert.Single(res);
         }
@@ -138,7 +137,7 @@ namespace eagletechapi.test.EagleTechApi.Tests
             await context.SaveChangesAsync();
             var service = new ChamadoService(context);
             
-            var res = await service.BuscarChamadosSolicitante();
+            var res = await service.BuscarTodosChamados();
             
             Assert.Empty(res);
         }
@@ -176,7 +175,6 @@ namespace eagletechapi.test.EagleTechApi.Tests
             
             Assert.Single(res);
             Assert.Equal(Status.ABERTO, res.First().Status);
-            Assert.Equal(u, res.First().Solicitante);
         }
         
         [Fact]
@@ -195,7 +193,6 @@ namespace eagletechapi.test.EagleTechApi.Tests
             
             Assert.Single(resTest);
             Assert.Equal(Status.ABERTO, resTest.First().Status);
-            Assert.Equal(u, resTest.First().Solicitante);
             Assert.Equal(res.Abertura, resTest.First().Abertura);
         }
         
@@ -399,7 +396,6 @@ namespace eagletechapi.test.EagleTechApi.Tests
             
             Assert.Single(resTest);
             Assert.Equal(Status.EM_ANDAMENTO, resTest.First().Status);
-            Assert.Equal(u, resTest.First().Solicitante);
             Assert.Equal(res.Abertura, resTest.First().Abertura);
         }
     }

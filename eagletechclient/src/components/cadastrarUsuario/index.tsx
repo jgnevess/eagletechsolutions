@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Error, handleRegister, Usuario, UsuarioCadastro } from "../../service/login";
 import Alert, { PropsAlert } from "../alert";
+import InputForm from "../inputForm";
 
 
 const CadastrarUsuario = () => {
@@ -54,7 +55,7 @@ const CadastrarUsuario = () => {
         });
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         let value = e.target.value.replace(/\D/g, "");
         if (value.length > 11) value = value.slice(0, 11);
         value = value.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
@@ -65,18 +66,9 @@ const CadastrarUsuario = () => {
         <>
             {alert ? <Alert type={alertType} message={message} /> : ''}
             <form onSubmit={handleSubmit} className="w-100 form-content p-5 rounded">
-                <div className="form-floating mb-3">
-                    <input value={nomeCompleto} onChange={(e) => setNome(e.target.value)} type="text" className="form-control" id="nome" placeholder="Nome completo" />
-                    <label htmlFor="nome">Nome completo</label>
-                </div>
-                <div className="form-floating mb-3">
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control" id="email" placeholder="Email" />
-                    <label htmlFor="email">Email</label>
-                </div>
-                <div className="form-floating mb-3">
-                    <input value={tel} onChange={handleChange} type="text" className="form-control" id="telefone" placeholder="Telefone" />
-                    <label htmlFor="telefone">Telefone</label>
-                </div>
+                <InputForm inputStyle="input" id="nome" placeholder="Nome Completo" set={(e) => setNome(e.target.value)} type="text" value={nomeCompleto} />
+                <InputForm inputStyle="input" id="email" placeholder="Email" set={(e) => setEmail(e.target.value)} type="email" value={email}/>
+                <InputForm inputStyle="input" id="telefone" placeholder="Telefone" set={handleChange} type="text" value={tel}/>
                 <div className="form-floating">
                     <select value={funcao} onChange={(e) => setFuncao(e.target.value)} className="form-select" id="funcao">
                         <option selected disabled>Selecione a função</option>
