@@ -109,38 +109,6 @@ namespace eagletechapi.test.EagleTechApi.Tests
 
             await Assert.ThrowsAsync<Exception>(() => service.BuscarChamado(1));
         }
-
-        [Fact]
-        public async Task BuscarChamadosShouldReturnList()
-        {
-            var usuario = CriarUsuarioSolicitante();
-            var context = GetInMemoryDb();
-            var u = new Usuario(usuario);
-            var us = context.Usuarios.Add(u);
-            await context.SaveChangesAsync();
-            var service = new ChamadoService(context);
-
-            await service.AbrirChamado(CriarChamado(us.Entity));
-            
-            var res = await service.BuscarTodosChamados();
-            
-            Assert.Single(res);
-        }
-        
-        [Fact]
-        public async Task BuscarChamadosShouldReturnAEmptyList()
-        {
-            var usuario = CriarUsuarioSolicitante();
-            var context = GetInMemoryDb();
-            var u = new Usuario(usuario);
-            var us = context.Usuarios.Add(u);
-            await context.SaveChangesAsync();
-            var service = new ChamadoService(context);
-            
-            var res = await service.BuscarTodosChamados();
-            
-            Assert.Empty(res);
-        }
         
         [Fact]
         public async Task BuscarChamadosComStatusShouldReturnList()
@@ -175,25 +143,6 @@ namespace eagletechapi.test.EagleTechApi.Tests
             
             Assert.Single(res);
             Assert.Equal(Status.ABERTO, res.First().Status);
-        }
-        
-        [Fact]
-        public async Task BuscarChamadosComStatusEUsuarioEAberturaShouldReturnList()
-        {
-            var usuario = CriarUsuarioSolicitante();
-            var context = GetInMemoryDb();
-            var u = new Usuario(usuario);
-            var us = context.Usuarios.Add(u);
-            await context.SaveChangesAsync();
-            var service = new ChamadoService(context);
-
-            var res = await service.AbrirChamado(CriarChamado(us.Entity));
-            
-            var resTest = await service.BuscarChamadosSolicitante(1, Status.ABERTO, res.Abertura);
-            
-            Assert.Single(resTest);
-            Assert.Equal(Status.ABERTO, resTest.First().Status);
-            Assert.Equal(res.Abertura, resTest.First().Abertura);
         }
         
         [Fact]

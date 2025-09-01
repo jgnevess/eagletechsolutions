@@ -65,42 +65,45 @@ namespace eagletechapi.Controllers
         {
             return Ok(await chamadoService.BuscarChamadosSolicitante(solicitante, status));
         }
-
-        [Authorize(Roles = "SOLICITANTE")]
-        [HttpGet("chamados-solicitante-abertura")]
-        public async Task<IActionResult> BuscarChamadoPorStatusESolcitante(int solicitante, Status status, DateTime abertura)
-        {
-            return Ok(await chamadoService.BuscarChamadosSolicitante(solicitante, status, abertura));
-        }
-
-        [Authorize(Roles = "SOLICITANTE")]
-        [HttpGet("chamados-solicitante-abertura-fechamento")]
-        public async Task<IActionResult> BuscarChamadoPorStatusESolcitante(int solicitante, Status status, DateTime abertura, DateTime fechamento)
-        {
-            return Ok(await chamadoService.BuscarChamadosSolicitante(solicitante, status, abertura, fechamento));
-        }
+        
 
         // tecnico 
+        
+        [Authorize(Roles = "TECNICO")]
+        [HttpPut("aceitar-tecnico")]
+        public async Task<IActionResult> AceitarChamado(int numeroChamado, int tecnicoMatricula)
+        {
+            try
+            {
+                var res = await chamadoService.AceitarChamado(numeroChamado, tecnicoMatricula);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [Authorize(Roles = "TECNICO")]
+        [HttpPut("fechar-tecnico")]
+        public async Task<IActionResult> FinalizarChamado(int numeroChamado, int tecnicoMatricula)
+        {
+            try
+            {
+                var res = await chamadoService.FecharChamado(numeroChamado, tecnicoMatricula);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [Authorize(Roles = "TECNICO")]
         [HttpGet("chamados-tecnico")]
         public async Task<IActionResult> BuscarChamadoPorStatusETecnico(int tecnico, Status status)
         {
             return Ok(await chamadoService.BuscarChamadosTecnico(tecnico, status));
-        }
-
-        [Authorize(Roles = "TECNICO")]
-        [HttpGet("chamados-tecnico-abertura")]
-        public async Task<IActionResult> BuscarChamadoPorStatusETecnico(int tecnico, Status status, DateTime abertura)
-        {
-            return Ok(await chamadoService.BuscarChamadosTecnico(tecnico, status, abertura));
-        }
-
-        [Authorize(Roles = "TECNICO")]
-        [HttpGet("chamados-tecnico-abertura-fechamento")]
-        public async Task<IActionResult> BuscarChamadoPorStatusETecnico(int tecnico, Status status, DateTime abertura, DateTime fechamento)
-        {
-            return Ok(await chamadoService.BuscarChamadosTecnico(tecnico, status, abertura, fechamento));
         }
 
         [Authorize]
@@ -110,5 +113,38 @@ namespace eagletechapi.Controllers
             var res = await chamadoService.BuscarChamado(numeroChamado);
             return Ok(res);
         }
+
+        [Authorize(Roles = "SOLICITANTE")]
+        [HttpDelete("cancelar-chamado")]
+        public async Task<IActionResult> CancelarChamado(int numeroChamado)
+        {
+            try
+            {
+                await chamadoService.DeletarChamado(numeroChamado);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            } 
+        }
+        
+        [Authorize(Roles = "SOLICITANTE")]
+        [HttpPut("editar-chamado")]
+        public async Task<IActionResult> EditarChamado(int numeroChamado, ChamadoIn chamadoIn)
+        {
+            try
+            {
+                var res = await chamadoService.EditarChamado(numeroChamado, chamadoIn);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            } 
+        }
+        
     }
+    
+    
 }

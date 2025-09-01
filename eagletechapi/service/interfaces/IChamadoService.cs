@@ -11,14 +11,9 @@ namespace eagletechapi.service.interfaces
     {
         Task<ChamadoOut> AbrirChamado(ChamadoIn chamadoIn);
         Task<ChamadoOut?> BuscarChamado(int numeroChamado);
-        Task<IEnumerable<ChamadoOut>> BuscarTodosChamados();
         Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(Status status);
         Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status);
-        Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status, DateTime abertura);
-        Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status, DateTime abertura, DateTime Fechamento);
         Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status);
-        Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status, DateTime abertura);
-        Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status, DateTime abertura, DateTime Fechamento);
         Task<ChamadoOut?> EditarChamado(int numeroChamado, ChamadoIn chamadoIn);
         Task<ChamadoOut?> AceitarChamado(int numeroChamado, int tecnicoId);
         Task<ChamadoOut?> FecharChamado(int numeroChamado, int tecnicoId);

@@ -1,8 +1,10 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import Container from "../../components/container"
+import { useFirstLogin } from "../../hooks/useFirstLogin";
 
 const NotFound = () => {
+    useFirstLogin();
     return (
         <Container>
             <>

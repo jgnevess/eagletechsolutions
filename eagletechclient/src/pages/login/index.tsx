@@ -3,9 +3,11 @@ import { Error, handleLoginAsync, LoginResposta } from "../../service/login";
 import { useNavigate } from "react-router-dom";
 import Alert, { PropsAlert } from "../../components/alert";
 import Container from "../../components/container";
+import { useFirstLogin } from "../../hooks/useFirstLogin";
 
 
 const LoginPage = () => {
+    useFirstLogin();
 
 
     const [matricula, setMatricula] = useState('');

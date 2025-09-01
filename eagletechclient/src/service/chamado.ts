@@ -95,6 +95,22 @@ const handleAbrirChamado = async (chamado: Chamado): Promise<Response> => {
     }
 }
 
+const handleEditarChamado = async (numeroChamado: number, chamado: Chamado): Promise<Response> => {
+    try {
+        const response = await axios.put<ChamadoAberto>(`${apiUrl}/editar-chamado`, chamado, {
+            headers: headers(),
+            params: {
+                numeroChamado: numeroChamado
+            }
+        });
+        return { status: response.status, data: response.data };
+    } catch (err) {
+        const error = err as AxiosError
+        const data = error.response?.data as Error
+        return { status: error.response?.status!, data: data }
+    }
+}
+
 const handleChamadosByMatricula = async (matricula: number, status: string): Promise<Response> => {
     try {
         const response = await axios.get<ChamadoDatails[]>(`${apiUrl}/chamados-solicitante`, {
@@ -117,7 +133,7 @@ const handleChamadosByMatriculaTecnico = async (matricula: number, status: strin
         const response = await axios.get<ChamadoDatails[]>(`${apiUrl}/chamados-tecnico`, {
             headers: headers(),
             params: {
-                solicitante: matricula,
+                tecnico: matricula,
                 status: status
             }
         })
@@ -147,13 +163,13 @@ const handleChamadosAbertos = async (): Promise<Response> => {
 
 const handleBuscarChamado = async (numeroChamado: number): Promise<Response> => {
     try {
-        const response = await axios.get<ChamadoAberto>(`${apiUrl}/chamado`, {
-        params: {
-            numeroChamado: numeroChamado
-        },
-        headers: headers()
-    })
-    return {status: 200, data: response.data};
+        const response = await axios.get<ChamadoDatails>(`${apiUrl}/chamado`, {
+            params: {
+                numeroChamado: numeroChamado
+            },
+            headers: headers()
+        })
+        return { status: 200, data: response.data };
     } catch (err) {
         const error = err as AxiosError
         const data = error.response?.data as Error
@@ -161,4 +177,64 @@ const handleBuscarChamado = async (numeroChamado: number): Promise<Response> => 
     }
 }
 
-export { handleAbrirChamado, handleBuscarChamado, handleChamadosByMatricula, handleChamadosAbertos, handleChamadosByMatriculaTecnico }
+const handleAceitarChamado = async (numeroChamado: number, tecnicoMatricula: number): Promise<Response> => {
+    try {
+        const response = await axios.put<ChamadoDatails>(`${apiUrl}/aceitar-tecnico`, {}, {
+            params: {
+                tecnicoMatricula: tecnicoMatricula,
+                numeroChamado: numeroChamado
+            },
+            headers: headers()
+        })
+        return { status: 200, data: response.data }
+    } catch (err) {
+        const error = err as AxiosError
+        const data = error.response?.data as Error
+        return { status: error.response?.status!, data: data }
+    }
+}
+
+const handleFinalizarChamado = async (numeroChamado: number, tecnicoMatricula: number): Promise<Response> => {
+    try {
+        const response = await axios.put<ChamadoDatails>(`${apiUrl}/fechar-tecnico`, {}, {
+            params: {
+                tecnicoMatricula: tecnicoMatricula,
+                numeroChamado: numeroChamado
+            },
+            headers: headers()
+        })
+        return { status: 200, data: response.data }
+    } catch (err) {
+        const error = err as AxiosError
+        const data = error.response?.data as Error
+        return { status: error.response?.status!, data: data }
+    }
+}
+
+const handleCancelarChamado = async (numeroChamado: number): Promise<Response> => {
+    try {
+        const response = await axios.delete(`${apiUrl}/cancelar-chamado`, {
+            params: {
+                numeroChamado: numeroChamado
+            },
+            headers: headers()
+        })
+        return { status: response.status }
+    } catch (err) {
+        const error = err as AxiosError
+        const data = error.response?.data as Error
+        return { status: error.response?.status!, data: data }
+    }
+}
+
+export {
+    handleAbrirChamado,
+    handleBuscarChamado,
+    handleChamadosByMatricula,
+    handleChamadosAbertos,
+    handleChamadosByMatriculaTecnico,
+    handleAceitarChamado,
+    handleFinalizarChamado,
+    handleCancelarChamado,
+    handleEditarChamado
+}

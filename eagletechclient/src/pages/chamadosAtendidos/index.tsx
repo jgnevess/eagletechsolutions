@@ -3,9 +3,12 @@ import Container from "../../components/container";
 import { ChamadoDatails, handleChamadosByMatricula, handleChamadosByMatriculaTecnico, Status } from "../../service/chamado";
 import { useNavigate } from "react-router-dom";
 import TabelaChamados from "../../components/tabelaChamados";
+import { useFirstLogin } from "../../hooks/useFirstLogin";
 
 
 const ChamadosAtendidos = () => {
+
+    useFirstLogin();
 
     const [chamados, setChamados] = useState<ChamadoDatails[]>();
     const [status, setStatus] = useState("EM_ANDAMENTO")
@@ -22,6 +25,7 @@ const ChamadosAtendidos = () => {
             }
             else {
                 const chamados = response.data as ChamadoDatails[]
+                console.log(chamados)
                 setChamados(chamados);
             }
         })

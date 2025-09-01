@@ -14,7 +14,7 @@ namespace eagletechapi.dto.chamado
         [StringLength(40, MinimumLength = 3, ErrorMessage = "O Titulo deve ter entre 3 e 40 caracteres")]
         public string Titulo { get; set; } = string.Empty;
         [Required(ErrorMessage = "A descricao é obrigatoria")]
-        [StringLength(40, MinimumLength = 3, ErrorMessage = "O Titulo deve ter entre 3 e 40 caracteres")]
+        [StringLength(500, MinimumLength = 3, ErrorMessage = "A descrição deve ter entre 3 e 500 caracteres")]
         
         public string Descricao { get; set; } = string.Empty;
         [Required(ErrorMessage = "A categoria é obrigatoria")]

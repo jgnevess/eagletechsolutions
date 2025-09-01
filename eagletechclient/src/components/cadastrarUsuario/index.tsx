@@ -38,10 +38,9 @@ const CadastrarUsuario = () => {
                     setMessage('')
                     setAlert(false)
                     setAlertType('alert alert-primary')
-                    sessionStorage.clear();
                 }, 2500)
 
-            } else if (res.status === 500) {
+            } else if (res.status !== 200) {
                 const data = res.CadastroResposta as Error
                 setMessage(data.Error)
                 setAlert(true)

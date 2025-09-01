@@ -3,9 +3,11 @@ import Container from "../../components/container";
 import { ChamadoDatails, handleChamadosByMatricula, Status } from "../../service/chamado";
 import { useNavigate } from "react-router-dom";
 import TabelaChamados from "../../components/tabelaChamados";
+import { useFirstLogin } from "../../hooks/useFirstLogin";
 
 
 const Chamados = () => {
+    useFirstLogin();
 
     const [chamados, setChamados] = useState<ChamadoDatails[]>();
     const [status, setStatus] = useState("ABERTO")

@@ -3,10 +3,11 @@ import Container from "../../components/container";
 import { ChamadoDatails, handleChamadosAbertos, handleChamadosByMatricula } from "../../service/chamado";
 import { useNavigate } from "react-router-dom";
 import TabelaChamados from "../../components/tabelaChamados";
+import { useFirstLogin } from "../../hooks/useFirstLogin";
 
 
 const ChamadosAbertos = () => {
-
+    useFirstLogin();
     const [chamados, setChamados] = useState<ChamadoDatails[]>();
     const navigate = useNavigate();
 
@@ -14,7 +15,7 @@ const ChamadosAbertos = () => {
 
         handleChamadosAbertos().then(response => {
             if (response.status !== 200) {
-                navigate('/sol')
+                // navigate('/sol')
             }
             else {
                 const chamados = response.data as ChamadoDatails[]

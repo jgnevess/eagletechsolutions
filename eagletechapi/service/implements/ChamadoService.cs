@@ -37,11 +37,6 @@ namespace eagletechapi.service.implements
 
         }
 
-        public async Task<IEnumerable<ChamadoOut>> BuscarTodosChamados()
-        {
-            return await context.Chamados.Select(c => new ChamadoOut(c)).ToListAsync();
-        }
-
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(Status status)
         {
             return await context.Chamados.Where(c => c.Status.Equals(status)).Select(c => new ChamadoOut(c)).ToListAsync();
@@ -52,27 +47,6 @@ namespace eagletechapi.service.implements
             return await context.Chamados
                 .Include(c => c.Solicitante)
                 .Where(c => c.Status.Equals(status) && c.Solicitante.Matricula.Equals(usuarioId))
-                .Select(c => new ChamadoOut(c))
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status, DateTime abertura)
-        {
-            return await context.Chamados
-                .Include(c => c.Solicitante)
-                .Where(c => c.Status.Equals(status) && c.Solicitante.Matricula.Equals(usuarioId) && c.Abertura.Equals(abertura))
-                .Select(c => new ChamadoOut(c))
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status, DateTime abertura, DateTime fechamento)
-        {
-            return await context.Chamados
-                .Include(c => c.Solicitante)
-                .Where(c => c.Status.Equals(status) &&
-                            c.Solicitante.Matricula.Equals(usuarioId) &&
-                            c.Abertura.Equals(abertura) &&
-                            c.Fechamento.Equals(fechamento))
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
         }
@@ -124,29 +98,49 @@ namespace eagletechapi.service.implements
 
         public async Task<ChamadoOut?> AceitarChamado(int numeroChamado, int tecnicoId)
         {
-            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception();
-            var tec = context.Usuarios.FirstOrDefault(u => u.Matricula.Equals(tecnicoId)) ?? throw new Exception();
-            if (tec.Funcao != Funcao.TECNICO) throw new Exception();
-            res.AceitarChamado(tec);
-            context.Chamados.Update(res);
+            var chamado = await context.Chamados
+                              .Include(c => c.Solicitante)
+                              .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado)
+                          ?? throw new Exception("Chamado não encontrado");
+            
+            var tecnico = await context.Usuarios
+                              .FirstOrDefaultAsync(u => u.Matricula == tecnicoId)
+                          ?? throw new Exception("Técnico não encontrado");
+
+            if (tecnico.Funcao != Funcao.TECNICO)
+                throw new Exception("Não autorizado");
+            chamado.AceitarChamado(tecnico);
             await context.SaveChangesAsync();
-            return new ChamadoOut(res);
+            return new ChamadoOut(chamado);
         }
+
 
         public async Task<ChamadoOut?> FecharChamado(int numeroChamado, int tecnicoId)
         {
-            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado);
-            if (res is not { Status: Status.EM_ANDAMENTO }) throw new Exception();
-            res.FecharChamado();
-            context.Chamados.Update(res);
+            var chamado = await context.Chamados
+                              .Include(c => c.Solicitante)
+                              .Include(c => c.Tecnico)
+                              .FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado)
+                          ?? throw new Exception("Chamado não encontrado");
+            
+            var tecnico = await context.Usuarios
+                              .FirstOrDefaultAsync(u => u.Matricula == tecnicoId)
+                          ?? throw new Exception("Técnico não encontrado");
+            
+            if(!tecnico.Equals(chamado.Tecnico)) throw new Exception("Não autorizado");
+
+            if (tecnico.Funcao != Funcao.TECNICO)
+                throw new Exception("Não autorizado");
+            if (chamado is not { Status: Status.EM_ANDAMENTO }) throw new Exception("Erro ao fechar o chamado");
+            chamado.FecharChamado();
             await context.SaveChangesAsync();
-            return new ChamadoOut(res);
+            return new ChamadoOut(chamado);
         }
 
         public async Task DeletarChamado(int numeroChamado)
         {
-            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception();
-            if (res.Status != Status.ABERTO) throw new Exception();
+            var res = await context.Chamados.FirstOrDefaultAsync(c => c.NumeroChamado == numeroChamado) ?? throw new Exception("Chamado nao encontrado");
+            if (res.Status != Status.ABERTO) throw new Exception("O chamado não está aberto");
             context.Chamados.Remove(res);
             await context.SaveChangesAsync();
         }

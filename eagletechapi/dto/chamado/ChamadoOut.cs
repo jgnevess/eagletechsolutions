@@ -16,7 +16,7 @@ namespace eagletechapi.dto.chamado
         public Categoria Categoria { get; set; }
         public DateTime Abertura { get; set; }
         public DateTime Fechamento { get; set; }
-        public UsuarioOut Solicitante { get; set; }
+        public UsuarioOut? Solicitante { get; set; }
         public UsuarioOut? Tecnico { get; set; }
 
         public ChamadoOut(Chamado chamado)
@@ -29,7 +29,7 @@ namespace eagletechapi.dto.chamado
             Categoria = chamado.Categoria;
             Abertura = chamado.Abertura;
             Fechamento = chamado.Fechamento;
-            Solicitante = chamado.Solicitante != null ? new UsuarioOut(chamado.Solicitante) : null!;
+            Solicitante = chamado.Solicitante != null ? new UsuarioOut(chamado.Solicitante) : null;
             Tecnico = chamado.Tecnico != null ? new UsuarioOut(chamado.Tecnico) : null;
         }
     }

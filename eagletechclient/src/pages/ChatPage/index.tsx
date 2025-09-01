@@ -23,6 +23,7 @@ const ChatPage = () => {
     const [disabledInput, setDisabledInput] = useState(false);
     const param = useParams();
     const navigate = useNavigate();
+    useFirstLogin();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

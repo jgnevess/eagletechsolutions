@@ -20,7 +20,8 @@ const Navbar = (props: Props) => {
     ]
 
     const TecnicoLinks = [
-        { nome: 'Chamados', url: '/chamados-abertos' },
+        { nome: 'Chamados Abertos', url: '/chamados-abertos' },
+        { nome: 'Chamados Atendidos', url: '/chamados-atendidos' },
         { nome: 'Sair', url: '/login'}
     ]
 
