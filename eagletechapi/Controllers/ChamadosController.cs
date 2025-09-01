@@ -1,4 +1,5 @@
 using eagletechapi.dto.chamado;
+using eagletechapi.entity.chamado.enums;
 using eagletechapi.models.chamado.enums;
 using eagletechapi.service.implements;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ namespace eagletechapi.Controllers
 
         [HttpPost("abrir-chamado")]
         [Authorize(Roles = "SOLICITANTE")]
-        public async Task<IActionResult> AbrirChamado(ChamadoIn chamadoIn)
+        public async Task<IActionResult> AbrirChamado([FromBody] ChamadoIn chamadoIn)
         {
             if (!ModelState.IsValid)
             {
@@ -32,9 +33,16 @@ namespace eagletechapi.Controllers
                 });
             }
 
-            var res = await chamadoService.AbrirChamado(chamadoIn);
+            try
+            {
+                var res = await chamadoService.AbrirChamado(chamadoIn);
 
-            return Ok(res);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [Authorize]

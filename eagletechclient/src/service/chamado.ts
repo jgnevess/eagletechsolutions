@@ -9,24 +9,24 @@ const headers = () => {
 }
 
 export interface Usuario {
-  matricula: number;
-  nomeCompleto: string;
-  telefone: string;
-  funcao: string;
-  email: string;
+    matricula: number;
+    nomeCompleto: string;
+    telefone: string;
+    funcao: string;
+    email: string;
 }
 
 export interface ChamadoDatails {
-  numeroChamado: number;
-  titulo: string;
-  descricao: string;
-  status: string;
-  prioridade: string;
-  categoria: string;
-  abertura: string;   
-  fechamento: string; 
-  solicitante: Usuario;
-  tecnico: Usuario | null;
+    numeroChamado: number;
+    titulo: string;
+    descricao: string;
+    status: Status;
+    prioridade: Prioridade;
+    categoria: Categoria;
+    abertura: string;
+    fechamento: string;
+    solicitante: Usuario;
+    tecnico: Usuario | null;
 }
 
 
@@ -53,12 +53,31 @@ export enum Categoria {
     OUTROS = "OUTROS",
 }
 
+export enum Prioridade {
+    CRITICA = "CRITICA",
+    ALTA = "ALTA",
+    MEDIA = "MEDIA",
+    BAIXA = "BAIXA",
+}
+
+export enum Status {
+    ABERTO = "ABERTO",
+    EM_ANDAMENTO = "EM_ANDAMENTO",
+    FECHADO = "FECHADO",
+}
 
 export interface ChamadoAberto {
     numeroChamado: number
-    titulo: string
-    descricao: string
+    titulo: string,
+    descricao: string,
+    status: Status,
+    prioridade: Prioridade,
+    categoria: Categoria,
+    abertura: string,
+    fechamento: string,
 }
+
+
 
 const apiUrl = `${process.env.REACT_APP_API_URL}api/Chamados`
 
@@ -68,39 +87,78 @@ const handleAbrirChamado = async (chamado: Chamado): Promise<Response> => {
         const response = await axios.post<ChamadoAberto>(`${apiUrl}/abrir-chamado`, chamado, {
             headers: headers()
         });
-        return {status: response.status, data: response.data};
+        return { status: response.status, data: response.data };
     } catch (err) {
         const error = err as AxiosError
         const data = error.response?.data as Error
-        return {status: error.response?.status!, data: data}
+        return { status: error.response?.status!, data: data }
     }
 }
 
-const handleChamadosByMatricula = async (matricula: number): Promise<Response>  => {
+const handleChamadosByMatricula = async (matricula: number, status: string): Promise<Response> => {
     try {
         const response = await axios.get<ChamadoDatails[]>(`${apiUrl}/chamados-solicitante`, {
             headers: headers(),
             params: {
                 solicitante: matricula,
-                status: 'ABERTO'
+                status: status
             }
         })
-        return {status: response.status, data: response.data}
+        return { status: response.status, data: response.data }
     } catch (err) {
         const error = err as AxiosError
         const data = error.response?.data as Error
-        return {status: error.response?.status!, data: data}
+        return { status: error.response?.status!, data: data }
     }
 }
 
-const handleBuscarChamado = async (numeroChamado: number): Promise<ChamadoAberto> => {
-    const response = await axios.get<ChamadoAberto>(`${apiUrl}/BuscarTodos`, {
+const handleChamadosByMatriculaTecnico = async (matricula: number, status: string): Promise<Response> => {
+    try {
+        const response = await axios.get<ChamadoDatails[]>(`${apiUrl}/chamados-tecnico`, {
+            headers: headers(),
+            params: {
+                solicitante: matricula,
+                status: status
+            }
+        })
+        return { status: response.status, data: response.data }
+    } catch (err) {
+        const error = err as AxiosError
+        const data = error.response?.data as Error
+        return { status: error.response?.status!, data: data }
+    }
+}
+
+const handleChamadosAbertos = async (): Promise<Response> => {
+    try {
+        const response = await axios.get<ChamadoDatails[]>(`${apiUrl}/chamados`, {
+            headers: headers(),
+            params: {
+                status: 'ABERTO'
+            }
+        })
+        return { status: response.status, data: response.data }
+    } catch (err) {
+        const error = err as AxiosError
+        const data = error.response?.data as Error
+        return { status: error.response?.status!, data: data }
+    }
+}
+
+const handleBuscarChamado = async (numeroChamado: number): Promise<Response> => {
+    try {
+        const response = await axios.get<ChamadoAberto>(`${apiUrl}/chamado`, {
         params: {
             numeroChamado: numeroChamado
         },
         headers: headers()
     })
-    return response.data;
+    return {status: 200, data: response.data};
+    } catch (err) {
+        const error = err as AxiosError
+        const data = error.response?.data as Error
+        return { status: error.response?.status!, data: data }
+    }
 }
 
-export { handleAbrirChamado, handleBuscarChamado, handleChamadosByMatricula }
+export { handleAbrirChamado, handleBuscarChamado, handleChamadosByMatricula, handleChamadosAbertos, handleChamadosByMatriculaTecnico }

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Container from "../../components/container";
-import { ChamadoDatails, handleChamadosByMatricula, Status } from "../../service/chamado";
+import { ChamadoDatails, handleChamadosByMatricula, handleChamadosByMatriculaTecnico, Status } from "../../service/chamado";
 import { useNavigate } from "react-router-dom";
 import TabelaChamados from "../../components/tabelaChamados";
 
 
-const Chamados = () => {
+const ChamadosAtendidos = () => {
 
     const [chamados, setChamados] = useState<ChamadoDatails[]>();
-    const [status, setStatus] = useState("ABERTO")
+    const [status, setStatus] = useState("EM_ANDAMENTO")
 
     const navigate = useNavigate();
 
@@ -16,9 +16,9 @@ const Chamados = () => {
 
         const matricula = Number.parseInt(sessionStorage.getItem("matricula")!);
 
-        handleChamadosByMatricula(matricula, status).then(response => {
+        handleChamadosByMatriculaTecnico(matricula, status).then(response => {
             if (response.status !== 200) {
-                navigate('/sol')
+                navigate('/tec')
             }
             else {
                 const chamados = response.data as ChamadoDatails[]
@@ -32,12 +32,6 @@ const Chamados = () => {
         <Container>
             <>
                 <div className="d-flex justify-content-around w-100">
-                    <div className="form-check">
-                        <input onChange={(e) => setStatus(e.target.value)} className="form-check-input" type="radio" name="status" id="Aberto" value="ABERTO" checked={status === 'ABERTO'}/>
-                        <label className="form-check-label" htmlFor="Aberto">
-                            Aberto
-                        </label>
-                    </div>
                     <div className="form-check">
                         <input onChange={(e) => setStatus(e.target.value)} className="form-check-input" type="radio" name="status" id="Em_Andamento" value="EM_ANDAMENTO" checked={status === 'EM_ANDAMENTO'}/>
                         <label className="form-check-label" htmlFor="Em_Andamento">
@@ -58,4 +52,4 @@ const Chamados = () => {
     )
 }
 
-export default Chamados;
+export default ChamadosAtendidos;

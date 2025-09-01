@@ -62,24 +62,6 @@ const ChatPage = () => {
         fetchMessages();
     }, [msg]);
 
-    useEffect(() => {
-        const init = async () => {
-            const numero = Number(param.numeroChamado);
-            const messages = await handleMessages(numero);
-
-            if (!messages || messages.conversation.length === 0) {
-                const chamado = await handleBuscarChamado(numero);
-                await handleChatbot(chamado.descricao, numero);
-                const updatedMessages = await handleMessages(numero);
-                setMsg(updatedMessages);
-            } else {
-                setMsg(messages);
-            }
-        };
-
-        init();
-    }, []);
-
 
     const handleAutoResponse = async (text: string) => {
         try {

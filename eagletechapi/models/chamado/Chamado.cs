@@ -14,13 +14,7 @@ namespace eagletechapi.models.chamado
     {
         [Key]
         public long NumeroChamado { get; set; }
-
-        [Required]
-        [StringLength(40, MinimumLength = 3, ErrorMessage = "O Titulo deve ter entre 3 e 40 caracteres")]
         public string Titulo { get; set; }
-        
-        [Required]
-        [StringLength(40, MinimumLength = 3, ErrorMessage = "O Titulo deve ter entre 3 e 40 caracteres")]
         public string Descricao { get; set; }
         public Status Status { get; set; }
         public Prioridade Prioridade { get; set; }

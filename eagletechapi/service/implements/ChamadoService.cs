@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using eagletechapi.Contexts;
 using eagletechapi.dto.chamado;
+using eagletechapi.entity.chamado.enums;
 using eagletechapi.entity.usuario;
 using eagletechapi.models;
 using eagletechapi.models.chamado;

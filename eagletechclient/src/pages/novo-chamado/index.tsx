@@ -36,10 +36,25 @@ const NovoChamado = () => {
         e.preventDefault();
         const usuario = JSON.parse(sessionStorage.getItem("usuario")!) as Usuario;
         const usuarioId = Number(usuario.matricula);
+
+        if (categoria === 'Selecione uma categoria') {
+            setAlert(true)
+            setAlertType('alert alert-danger')
+            setMessage("Selecione uma categoria")
+
+            setTimeout(() => {
+                setMessage('')
+                setAlert(false)
+                setAlertType('alert alert-primary')
+            }, 2500)
+
+            return;
+        }
+
         const chamado = { titulo, descricao, categoria: categoria as Categoria, usuarioId };
 
         handleAbrirChamado(chamado).then(response => {
-            if(response.status === 400) {
+            if (response.status === 400) {
                 setAlert(true)
                 setAlertType('alert alert-danger')
                 const err = response.data as Error
@@ -50,7 +65,7 @@ const NovoChamado = () => {
                     setAlert(false)
                     setAlertType('alert alert-primary')
                 }, 2500)
-            } 
+            }
             else {
                 setAlert(true)
                 setAlertType("alert alert-success")

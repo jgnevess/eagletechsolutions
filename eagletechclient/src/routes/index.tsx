@@ -12,6 +12,8 @@ import SolicitanteDashboard from "../pages/solicitantedashboard";
 import NovoChamado from "../pages/novo-chamado";
 import Chamados from "../pages/chamados";
 import Chamado from "../pages/chamado";
+import ChamadosAbertos from "../pages/chamadosAbertos";
+import ChamadosAtendidos from "../pages/chamadosAtendidos";
 
 const Routers = () => {
     return (
@@ -61,8 +63,26 @@ const Routers = () => {
                     </PrivateRouter>
                 } />
 
+                <Route path="/chamados-abertos" element={
+                    <PrivateRouter roles={["TECNICO"]}>
+                        <ChamadosAbertos />
+                    </PrivateRouter>
+                } />
+
+                <Route path="/chamados-atendidos" element={
+                    <PrivateRouter roles={["TECNICO"]}>
+                        <ChamadosAtendidos />
+                    </PrivateRouter>
+                } />
+
                 <Route path="/chamados/chamado/:id" element={
                     <PrivateRouter roles={["SOLICITANTE"]}>
+                        <Chamado />
+                    </PrivateRouter>
+                } />
+
+                <Route path="/chamados-abertos/chamado/:id" element={
+                    <PrivateRouter roles={["TECNICO"]}>
                         <Chamado />
                     </PrivateRouter>
                 } />
