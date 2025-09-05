@@ -79,7 +79,7 @@ export interface ChamadoAberto {
 
 
 
-const apiUrl = `${process.env.REACT_APP_API_URL}api/Chamados`
+const apiUrl = `${process.env.REACT_APP_API_URL}/api/Chamados`
 
 
 const handleAbrirChamado = async (chamado: Chamado): Promise<Response> => {

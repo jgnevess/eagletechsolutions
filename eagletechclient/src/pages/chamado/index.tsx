@@ -56,6 +56,7 @@ const Chamado = () => {
                     navigate('/');
                 }, 2500)
             } else {
+                setReload(true)
                 setAlert(true)
                 setAlertType('alert alert-success')
                 setMessage("Chamado aceito")
@@ -63,6 +64,7 @@ const Chamado = () => {
                 setTimeout(() => {
                     setMessage('')
                     setAlert(false)
+                    setReload(false)
                     setAlertType('alert alert-primary')
                 }, 2500)
             }
@@ -79,7 +81,6 @@ const Chamado = () => {
                 setAlertType('alert alert-danger')
                 setMessage(data.Error)
                 setReload(true)
-
                 setTimeout(() => {
                     setMessage('')
                     setAlert(false)
@@ -88,12 +89,14 @@ const Chamado = () => {
                     navigate('/');
                 }, 2500)
             } else {
+                setReload(true)
                 setAlert(true)
                 setAlertType('alert alert-success')
                 setMessage("Chamado Finalizado")
                 setChamado(chamado)
                 setTimeout(() => {
                     setMessage('')
+                    setReload(false)
                     setAlert(false)
                     setAlertType('alert alert-primary')
                 }, 2500)

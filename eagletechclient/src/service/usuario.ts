@@ -8,7 +8,7 @@ const headers = () => {
 }
 
 
-const apiUrl = `${process.env.REACT_APP_API_URL}api/Usuario
+const apiUrl = `${process.env.REACT_APP_API_URL}/api/Usuario
 `
 interface SimplePasswordUpdate {
     matricula: number

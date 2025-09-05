@@ -45,7 +45,7 @@ export interface UsuarioCadastro {
 }
 
 
-const apiUrl = `${process.env.REACT_APP_API_URL}api/Auth`
+const apiUrl = `${process.env.REACT_APP_API_URL}/api/Auth`
 
 const handleLoginAsync = async (matricula: string, senha: string): Promise<Resposta> => {
     try {
