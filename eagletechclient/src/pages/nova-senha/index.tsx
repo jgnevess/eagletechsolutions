@@ -4,6 +4,7 @@ import { redirect, useNavigate } from "react-router-dom";
 import Alert, { PropsAlert } from "../../components/alert";
 import Container from "../../components/container";
 import { handleFirstLogin } from "../../service/firstlogin";
+import { Error } from "../../service/login";
 
 
 const NovaSenha = () => {
@@ -16,8 +17,8 @@ const NovaSenha = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!handleFirstLogin()) navigate('/');
-    },[])
+        if (!handleFirstLogin()) navigate('/');
+    }, [])
 
     const handleNewPassword = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -43,7 +44,8 @@ const NovaSenha = () => {
                 }, 2500)
 
             } else if (res.status === 400) {
-                setMessage(res.resposta?.Error!)
+                const data = res.resposta as Error
+                setMessage(data.Error)
                 setAlert(true)
                 setAlertType('alert alert-danger')
                 setTimeout(() => {

@@ -6,7 +6,6 @@ import NotFound from "../pages/notfound";
 import LoginPage from "../pages/login";
 import PrivateRouter from "./privateRoute";
 import NovaSenha from "../pages/nova-senha";
-import AdminDashboard from "../pages/admindashboard";
 import TecnicoDashboard from "../pages/tecnicodashboard";
 import SolicitanteDashboard from "../pages/solicitantedashboard";
 import NovoChamado from "../pages/novo-chamado";
@@ -15,6 +14,10 @@ import Chamado from "../pages/chamado";
 import ChamadosAbertos from "../pages/chamadosAbertos";
 import ChamadosAtendidos from "../pages/chamadosAtendidos";
 import EditarChamado from "../pages/editar-chamado";
+import Usuarios from "../pages/usuarios";
+import UsuarioPage from "../pages/usuario";
+import AdminDashboard from "../pages/admindashboard";
+import CadastrarUsuarioPage from "../pages/cadastrar-usuario";
 
 const Routers = () => {
     return (
@@ -42,7 +45,19 @@ const Routers = () => {
 
                 <Route path="/cadastro" element={
                     <PrivateRouter roles={["ADMIN"]}>
-                        <AdminDashboard />
+                        <CadastrarUsuarioPage />
+                    </PrivateRouter>
+                } />
+
+                <Route path="/usuarios" element={
+                    <PrivateRouter roles={["ADMIN"]}>
+                        <Usuarios />
+                    </PrivateRouter>
+                } />
+
+                <Route path="/usuario/:matricula" element={
+                    <PrivateRouter roles={["ADMIN"]}>
+                        <UsuarioPage />
                     </PrivateRouter>
                 } />
 

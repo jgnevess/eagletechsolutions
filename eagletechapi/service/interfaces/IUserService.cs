@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using eagletechapi.dto.usuario;
+using eagletechapi.models.usuario;
 
 namespace eagletechapi.service.interfaces
 {
@@ -11,9 +12,9 @@ namespace eagletechapi.service.interfaces
         Task<UsuarioOut> CadastrarUsuario(UsuarioIn usuarioIn);
         Task<UsuarioOut?> AlterarSenha(SimplePasswordUpdate simplePasswordUpdate);
         Task<UsuarioOut?> AlterarSenha(PasswordUpdate passwordUpdate);
-        Task<IEnumerable<UsuarioOut>> ListarTodos();
+        Task<List<Usuario>> ListarTodos(int pageNumber, int pageSize);
         Task<UsuarioOut?> BuscarUsuario(int matricula);
-        Task<UsuarioOut?> BuscarUsuario(string nome);
+        Task<List<UsuarioOut>> BuscarUsuario(string nome);
         Task<UsuarioOut> EditarUsuario(int matricula, UsuarioUpdateIn usuarioIn);
         Task DeletarUsuario(int matricula);
     }

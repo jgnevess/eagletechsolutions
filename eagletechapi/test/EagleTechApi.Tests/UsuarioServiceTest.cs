@@ -178,7 +178,7 @@ namespace eagletechapi.test.service
             var context = GetInMemoryDb();
             var service = new UserService(context);
 
-            var res = await service.ListarTodos();
+            var res = await service.ListarTodos(1, 1);
 
             Assert.Empty(res);
         }
@@ -192,7 +192,7 @@ namespace eagletechapi.test.service
 
             await service.CadastrarUsuario(usuarioIn);
 
-            var res = await service.ListarTodos();
+            var res = await service.ListarTodos(1, 1);
 
             Assert.NotEmpty(res);
         }
@@ -244,7 +244,7 @@ namespace eagletechapi.test.service
             var res = await service.BuscarUsuario("Jo");
 
             Assert.NotNull(res);
-            Assert.Equal("João Silva", res.NomeCompleto);
+            Assert.Equal("João Silva", res[0].NomeCompleto);
         }
 
         [Fact]

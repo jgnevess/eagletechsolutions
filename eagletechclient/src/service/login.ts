@@ -22,10 +22,10 @@ export interface Usuario {
 }
 
 export interface LoginResposta {
-    Token: string
-    Role: string
-    FirstLogin: boolean
-    Matricula: number
+    token: string
+    role: string
+    firstLogin: boolean
+    matricula: number
     usuario: Usuario
 }
 

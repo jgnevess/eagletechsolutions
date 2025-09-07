@@ -3,7 +3,6 @@ import { Error, handleRegister, Usuario, UsuarioCadastro } from "../../service/l
 import Alert, { PropsAlert } from "../alert";
 import InputForm from "../inputForm";
 
-
 const CadastrarUsuario = () => {
 
     const [nomeCompleto, setNome] = useState('')
@@ -14,7 +13,6 @@ const CadastrarUsuario = () => {
     const [alert, setAlert] = useState(false);
     const [message, setMessage] = useState('');
     const [alertType, setAlertType] = useState<PropsAlert["type"]>('alert alert-primary');
-
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -66,8 +64,8 @@ const CadastrarUsuario = () => {
             {alert ? <Alert type={alertType} message={message} /> : ''}
             <form onSubmit={handleSubmit} className="w-100 form-content p-5 rounded">
                 <InputForm inputStyle="input" id="nome" placeholder="Nome Completo" set={(e) => setNome(e.target.value)} type="text" value={nomeCompleto} />
-                <InputForm inputStyle="input" id="email" placeholder="Email" set={(e) => setEmail(e.target.value)} type="email" value={email}/>
-                <InputForm inputStyle="input" id="telefone" placeholder="Telefone" set={handleChange} type="text" value={tel}/>
+                <InputForm inputStyle="input" id="email" placeholder="Email" set={(e) => setEmail(e.target.value)} type="email" value={email} />
+                <InputForm inputStyle="input" id="telefone" placeholder="Telefone" set={handleChange} type="text" value={tel} />
                 <div className="form-floating">
                     <select value={funcao} onChange={(e) => setFuncao(e.target.value)} className="form-select" id="funcao">
                         <option selected disabled>Selecione a função</option>

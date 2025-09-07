@@ -60,14 +60,16 @@ namespace eagletechapi.service.implements
         public async Task<UsuarioOut?> BuscarUsuario(int matricula)
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Matricula == matricula);
-            if (usuario == null) return null;
-            return new UsuarioOut(usuario);
+            return usuario == null ? throw new Exception("Usuario não encontrado") : new UsuarioOut(usuario);
         }
 
-        public async Task<UsuarioOut?> BuscarUsuario(string nome)
+        public async Task<List<UsuarioOut>> BuscarUsuario(string nome)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.NomeCompleto.Contains(nome, StringComparison.CurrentCultureIgnoreCase));
-            return usuario == null ? throw new Exception() : new UsuarioOut(usuario);
+            return await context.Usuarios
+                .AsNoTracking()
+                .Where(u => u.NomeCompleto.Contains(nome))
+                .Select(u => new UsuarioOut(u))
+                .ToListAsync();
         }
 
         public async Task<UsuarioOut> CadastrarUsuario(UsuarioIn usuarioIn)
@@ -110,9 +112,9 @@ namespace eagletechapi.service.implements
             return new UsuarioOut(usuario);
         }
 
-        public async Task<IEnumerable<UsuarioOut>> ListarTodos()
+        public async Task<List<Usuario>> ListarTodos(int pageNumber, int pageSize)
         {
-            return await _context.Usuarios.Select(u => new UsuarioOut(u)).ToListAsync();
+            return await context.Usuarios.OrderBy(u => u.Matricula).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
         }
     }
 }

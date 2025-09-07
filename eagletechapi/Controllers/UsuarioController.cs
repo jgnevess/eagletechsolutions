@@ -45,5 +45,41 @@ namespace eagletechapi.Controllers
                 return BadRequest(res);
             }
         }
+        
+        [HttpGet("Usuarios")]
+        public async Task<IActionResult> ListarTodos(int pageNumber, int pageSize)
+        {
+            return Ok(await service.ListarTodos(pageNumber, pageSize));
+        }
+        
+        [HttpGet("matricula/{matricula}")]
+        public async Task<IActionResult> BuscarUsuario(int matricula)
+        {
+            try
+            {
+                var res = await service.BuscarUsuario(matricula);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpGet("nome")]
+        public async Task<IActionResult> BuscarUsuario(string nome)
+        {
+            try
+            {
+                var res = await service.BuscarUsuario(nome);
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
+        
     }
 }

@@ -19,11 +19,11 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(sessionStorage.length > 0) {
+        if (sessionStorage.length > 0) {
             sessionStorage.clear();
             window.location.href = '/login'
         }
-    },[])
+    }, [])
 
     const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -31,28 +31,31 @@ const LoginPage = () => {
         handleLoginAsync(matricula, senha).then(res => {
             if (res.status === 200) {
                 const data = res.LoginResposta as LoginResposta
-                sessionStorage.setItem("token", data.Token);
-                sessionStorage.setItem("role", data.Role);
-                sessionStorage.setItem("matricula", data.Matricula.toLocaleString())
-                sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
-                sessionStorage.setItem("first", JSON.stringify(data.FirstLogin));
 
-                if (data.FirstLogin) {
+                console.log(data)
+
+                sessionStorage.setItem("token", data.token);
+                sessionStorage.setItem("role", data.role);
+                sessionStorage.setItem("matricula", data.matricula.toLocaleString())
+                sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
+                sessionStorage.setItem("first", JSON.stringify(data.firstLogin));
+
+                if (data.firstLogin) {
                     navigate('/nova-senha')
                 }
                 else {
-                    if(data.Role === "ADMIN") {
+                    if (data.role === "ADMIN") {
                         return navigate('/')
                     }
 
-                    if(data.Role === "TECNICO") {
+                    if (data.role === "TECNICO") {
                         return navigate('/')
                     }
 
-                    if(data.Role === "SOLICITANTE") {
+                    if (data.role === "SOLICITANTE") {
                         return navigate('/');
                     }
-                    
+
                     return navigate('/');
                 }
 
