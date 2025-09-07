@@ -17,47 +17,56 @@ namespace eagletechapi.service.implements
 {
     public class AuthService(AppDbContext context, IConfiguration configuration) : IAuthService
     {
-        private readonly AppDbContext _context = context;
-        private readonly IConfiguration _config = configuration;
-
-
-
-        public async Task<Dictionary<string, object>> Login(LoginDto loginDto)
+        public async Task<LoginResponse> Login(LoginDto loginDto)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(loginDto.Matricula)) ??
+            
+            // Busca o usuário no banco de dados pela matrícula recebida no LoginDto
+            // Caso não encontre, lança uma exceção
+            
+            var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(loginDto.Matricula)) ??
             throw new Exception("Usuario não encontrado, solicite o cadastro com um Administrador");
 
+            // Compara o hash da senha recebida do frontend com o hash do banco de dados
+            // Se não forem iguais, lança uma exceção
+            
             if (!BCrypt.Net.BCrypt.Verify(loginDto.Senha, usuario.Senha)) throw new Exception("Senha incorreta");
+            
+            
+            // Cria um array de claims (informações do usuário) que serão incluídas no token
+            // Essas claims serão usadas depois para validação de permissões e identidade
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, usuario.Email),
                 new Claim(ClaimTypes.Role, usuario.Funcao.ToString())
             };
+            
+            // Busca a chave da API no arquivo de configuração
 
-
-            var apiKey = _config["Jwt:Key"] ?? "";
-
+            var apiKey = configuration["Jwt:Key"] ?? "";
+            
+            // Cria as credenciais de assinatura do token usando a chave e o algoritmo HMAC-SHA256
+            
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(apiKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            // Cria as credenciais de assinatura do token usando a chave e o algoritmo HMAC-SHA256
+            
             var token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds
             );
 
-
-            Dictionary<string, object> response = new()
-            {
-                { "Token", new JwtSecurityTokenHandler().WriteToken(token) },
-                { "Role", usuario.Funcao.ToString() },
-                { "Matricula", usuario.Matricula },
-                { "usuario", new UsuarioOut(usuario) },
-                { "FirstLogin", usuario.firstLogin }
-            };
-
-            return response;
+            // Retorna a resposta para o controller com o token e informações do usuário
+            
+            return new LoginResponse(
+                new JwtSecurityTokenHandler().WriteToken(token),
+                usuario.Funcao.ToString(), 
+                usuario.Matricula,
+                new UsuarioOut(usuario),
+                usuario.firstLogin
+                );
         }
     }
 }

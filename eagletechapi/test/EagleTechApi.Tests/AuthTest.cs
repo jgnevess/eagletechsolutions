@@ -62,13 +62,13 @@ namespace EagleTechApi.Tests
             var res = await auth.Login(dto);
 
             var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken((string) res["Token"]);
+            var jwt = handler.ReadJwtToken((string) res.Token);
 
             Assert.Equal("joao@testeemail.com", jwt.Claims.First(c => c.Type == ClaimTypes.Name).Value);
             Assert.Equal("ADMIN", jwt.Claims.First(c => c.Type == ClaimTypes.Role).Value);
-            Assert.False(string.IsNullOrEmpty((string) res["Token"]));
-            Assert.Equal("ADMIN",(string) res["Role"]);
-            Assert.True((bool) res["FirstLogin"]);
+            Assert.False(string.IsNullOrEmpty((string) res.Token));
+            Assert.Equal("ADMIN",(string) res.Role);
+            Assert.True((bool) res.FirstLogin);
         }
 
         [Fact]
