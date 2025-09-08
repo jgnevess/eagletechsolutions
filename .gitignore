@@ -40,7 +40,8 @@ coverage/
 .env.test.local
 .env.production.local
 *sql
-*.env*
+eagletechclient/src/.env.*
+
 # IDEs
 .idea/
 *.sublime-workspace
