@@ -2,8 +2,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using eagletechapi.Contexts;
-using eagletechapi.http;
-using eagletechapi.service;
 using eagletechapi.service.implements;
 using eagletechapi.service.interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -79,8 +77,6 @@ builder.Services
         opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddSingleton<ClientHttp>();
-builder.Services.AddScoped<ChatbotService>();
 builder.Services.AddScoped<ChamadoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();

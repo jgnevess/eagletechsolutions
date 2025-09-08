@@ -79,7 +79,35 @@ namespace eagletechapi.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
-        
+
+        [HttpPut("alterar-senha")]
+        public async Task<IActionResult> AlterarSenha([FromBody] PasswordUpdate PasswordUpdate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Dados invalidos");
+            }
+            try
+            {
+                return Ok(await service.AlterarSenha(PasswordUpdate));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut("editar/{matricula}")]
+        public async Task<IActionResult> EditarUsuario(int matricula, [FromBody] UsuarioUpdateIn usuarioIn)
+        {
+            try
+            {
+                return Ok(await service.EditarUsuario(matricula, usuarioIn));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Error = e.Message });
+            }
+        }
     }
 }

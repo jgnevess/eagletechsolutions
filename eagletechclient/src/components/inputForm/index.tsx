@@ -8,9 +8,10 @@ interface Props {
     placeholder: string
     label?: string
     inputStyle: 'input' | 'textarea'
+    disabled?: boolean
 }
 
-const InputForm = ({ value, set, id, type, placeholder, label, inputStyle }: Props) => {
+const InputForm = ({ value, set, id, type, placeholder, label, inputStyle, disabled }: Props) => {
     const InputElement = inputStyle === "input" ? (
         <input
             value={value}
@@ -19,6 +20,7 @@ const InputForm = ({ value, set, id, type, placeholder, label, inputStyle }: Pro
             className="form-control"
             id={id}
             placeholder={placeholder}
+            disabled={disabled}
         />
     ) : (
         <textarea

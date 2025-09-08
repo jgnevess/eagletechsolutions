@@ -8,6 +8,7 @@ const headers = () => {
 }
 
 
+
 const apiUrl = `${process.env.REACT_APP_API_URL}/api/Usuario
 `
 interface SimplePasswordUpdate {
@@ -18,11 +19,23 @@ interface SimplePasswordUpdate {
 
 interface Resposta {
     status: number
-    resposta?: Error | Usuario | Usuario[]
+    resposta?: Error | Usuario | Usuario[] | UsuarioOut | ErrorEditar
 }
 
-interface Error {
+export interface ErrorEditar {
+    error: string
+}
+
+export interface Error {
     Error: string
+}
+
+export interface UsuarioOut {
+    matricula: number;
+    nomeCompleto: string;
+    telefone: string;
+    funcao: string;
+    email: string;
 }
 
 export interface Usuario {
@@ -32,6 +45,21 @@ export interface Usuario {
     funcao: string;
     email: string;
     firstLogin: boolean;
+}
+
+export interface UsuarioEditar {
+    matricula: number;
+    nomeCompleto: string;
+    telefone: string;
+    funcao: string;
+    email: string;
+}
+
+interface PasswordUpdate {
+    matricula: number;
+    senhaAntiga: string;
+    senhaNova: string;
+    confirmacaoNova: string;
 }
 
 const handleMudarSenha = async (spu: SimplePasswordUpdate): Promise<Resposta> => {
@@ -81,4 +109,31 @@ const handleGetUsuario = async (matricula: string): Promise<Resposta> => {
     }
 }
 
-export { handleMudarSenha, handleGetAllUsuarios, handleGetUsuario, handleGetAllUsuariosByNome }
+
+const handleAlterarSenhaUsuario = async (pu: PasswordUpdate): Promise<Resposta> => {
+    try {
+        const res = await axios.put(`${apiUrl}/alterar-senha`, pu, {
+            headers: headers()
+        });
+        return { status: res.status }
+    } catch (err) {
+        const error = err as AxiosError;
+        const data = error.response?.data as Error
+        return { status: 400, resposta: data };
+    }
+}
+
+const handleEditarUsuario = async (matricula: string, Usuario: UsuarioEditar): Promise<Resposta> => {
+    try {
+        const res = await axios.put<Usuario>(`${apiUrl}/editar/${matricula}`, Usuario, {
+            headers: headers()
+        });
+        return { status: res.status, resposta: res.data }
+    } catch (err) {
+        const error = err as AxiosError;
+        const data = error.response?.data as Error
+        return { status: 400, resposta: data };
+    }
+}
+
+export { handleMudarSenha, handleGetAllUsuarios, handleGetUsuario, handleGetAllUsuariosByNome, handleEditarUsuario, handleAlterarSenhaUsuario }

@@ -25,7 +25,6 @@ const ChamadosAtendidos = () => {
             }
             else {
                 const chamados = response.data as ChamadoDatails[]
-                console.log(chamados)
                 setChamados(chamados);
             }
         })
@@ -37,13 +36,13 @@ const ChamadosAtendidos = () => {
             <>
                 <div className="d-flex justify-content-around w-100">
                     <div className="form-check">
-                        <input onChange={(e) => setStatus(e.target.value)} className="form-check-input" type="radio" name="status" id="Em_Andamento" value="EM_ANDAMENTO" checked={status === 'EM_ANDAMENTO'}/>
+                        <input onChange={(e) => setStatus(e.target.value)} className="form-check-input" type="radio" name="status" id="Em_Andamento" value="EM_ANDAMENTO" checked={status === 'EM_ANDAMENTO'} />
                         <label className="form-check-label" htmlFor="Em_Andamento">
                             Em Andamento
                         </label>
                     </div>
                     <div className="form-check">
-                        <input onChange={(e) => setStatus(e.target.value)} className="form-check-input" type="radio" name="status" id="Fechado" value="FECHADO" checked={status === 'FECHADO'}/>
+                        <input onChange={(e) => setStatus(e.target.value)} className="form-check-input" type="radio" name="status" id="Fechado" value="FECHADO" checked={status === 'FECHADO'} />
                         <label className="form-check-label" htmlFor="Fechado">
                             Fechado
                         </label>

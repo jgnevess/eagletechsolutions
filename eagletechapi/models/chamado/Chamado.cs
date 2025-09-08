@@ -31,7 +31,7 @@ namespace eagletechapi.models.chamado
             this.Titulo = string.Empty;
             this.Descricao = string.Empty;
             this.Status = Status.ABERTO;
-            this.Prioridade = Prioridade.BAIXA;
+            this.Prioridade = Prioridade.CRITICA;
             this.Categoria = Categoria.OUTROS;
             this.Abertura = DateTime.Now;
             this.Fechamento = DateTime.Now;

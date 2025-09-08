@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { handleAbrirChamado } from "../../service/chamado";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Usuario } from "../../service/login";
 import Container from "../../components/container";
 import { handleFirstLogin } from "../../service/firstlogin";
@@ -18,7 +18,7 @@ const AboutUser = () => {
 
     return (
         <Container>
-            <div className="form-content p-5 rounded w-75">
+            <div className="form-content p-5 rounded w-75 text-center">
                 <h1>Página protegida</h1>
                 <h4>Se você entrou nessa página tem um login com as credenciais válidas</h4>
 
@@ -31,10 +31,14 @@ const AboutUser = () => {
                     <li>Função: {u.funcao}</li>
                 </ul>
 
-                <button className="btn btn-dark" onClick={() => {
-                    sessionStorage.clear();
-                    window.location.href = '/login'
-                }}>Sair</button>
+                <div className="d-flex justify-content-around">
+                    <button className="btn btn-dark" onClick={() => {
+                        sessionStorage.clear();
+                        window.location.href = '/login'
+                    }}>Sair</button>
+
+                    <Link to={"/alterar-senha"} className="btn btn-dark">Alterar senha</Link>
+                </div>
             </div>
         </Container>
     )

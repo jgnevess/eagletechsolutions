@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using eagletechapi.Contexts;
 using eagletechapi.dto.chamado;
 using eagletechapi.entity.chamado.enums;
@@ -17,7 +18,9 @@ namespace eagletechapi.service.implements
         {
             var solicitante = await context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(chamadoIn.UsuarioId));
             var chamado = new Chamado(chamadoIn, solicitante!);
-
+            
+            chamado.Prioridade = await this.DefinirPrioidade(chamado.Descricao);
+            
             var validationContext = new ValidationContext(chamado);
             Validator.ValidateObject(chamado, validationContext, true);
 
@@ -39,7 +42,11 @@ namespace eagletechapi.service.implements
 
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(Status status)
         {
-            return await context.Chamados.Where(c => c.Status.Equals(status)).Select(c => new ChamadoOut(c)).ToListAsync();
+            return await context.Chamados
+                .Where(c => c.Status.Equals(status))
+                .OrderBy(c => c.Prioridade)
+                .Select(c => new ChamadoOut(c))
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status)
@@ -67,19 +74,6 @@ namespace eagletechapi.service.implements
                 .Include(c => c.Solicitante)
                 .Include(c => c.Tecnico)
                 .Where(c => c.Status.Equals(status) && c.Tecnico.Matricula.Equals(usuarioId) && c.Abertura.Equals(abertura))
-                .Select(c => new ChamadoOut(c))
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status, DateTime abertura, DateTime fechamento)
-        {
-            return await context.Chamados
-                .Include(c => c.Solicitante)
-                .Include(c => c.Tecnico)
-                .Where(c => c.Status.Equals(status) &&
-                            c.Tecnico.Matricula.Equals(usuarioId) &&
-                            c.Abertura.Equals(abertura) &&
-                            c.Fechamento.Equals(fechamento))
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
         }
@@ -143,6 +137,63 @@ namespace eagletechapi.service.implements
             if (res.Status != Status.ABERTO) throw new Exception("O chamado não está aberto");
             context.Chamados.Remove(res);
             await context.SaveChangesAsync();
+        }
+
+        private async Task<Prioridade> DefinirPrioidade(string descricao)
+        {
+            using var http = new HttpClient();
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+
+            var apiKey = config["Gemini:ApiKey"];
+
+            var requestBody = new
+            {
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new[]
+                        {
+                            new { text = $"Você tem que definir uma prioridade para um chamdo tecnico, então Defina a prioridade deste chamado: {descricao} (ALTA, MEDIA, BAIXA, CRITICA), apenas uma dessas palavras entre os parenteses, sem mais nada, tudo em uppercase"}
+                        }
+                    }
+                }
+            };
+            
+            http.DefaultRequestHeaders.Clear();
+            http.DefaultRequestHeaders.Add("X-goog-api-key", apiKey);
+
+            var response = await http.PostAsJsonAsync(
+                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+                requestBody
+            );
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            // pega só o texto da resposta
+            using var doc = JsonDocument.Parse(json);
+            var text = doc.RootElement
+                .GetProperty("candidates")[0]
+                .GetProperty("content")
+                .GetProperty("parts")[0]
+                .GetProperty("text")
+                .GetString();
+
+            Console.WriteLine($"[DEBUG] Gemini retornou: '{text}'");
+            
+            var prioridade = text?.Trim().ToUpperInvariant();
+
+            return prioridade switch
+            {
+                "CRITICA" => Prioridade.CRITICA,
+                "ALTA"    => Prioridade.ALTA,
+                "MEDIA"   => Prioridade.MEDIA,
+                "BAIXA"   => Prioridade.BAIXA,
+                _         => throw new Exception($"Prioridade inválida retornada: '{prioridade}'")
+            };
         }
     }
 }

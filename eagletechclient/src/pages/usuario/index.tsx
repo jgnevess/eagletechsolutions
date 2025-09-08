@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Container from "../../components/container";
 import { useNavigate, useParams } from "react-router-dom";
-import { handleGetUsuario, Usuario } from "../../service/usuario";
+import { Error, ErrorEditar, handleEditarUsuario, handleGetUsuario, Usuario, UsuarioOut } from "../../service/usuario";
 import CadastrarUsuario from "../../components/cadastrarUsuario";
 import Alert, { PropsAlert } from "../../components/alert";
 import InputForm from "../../components/inputForm";
@@ -19,6 +19,7 @@ const UsuarioPage = () => {
   const [alertType, setAlertType] = useState<PropsAlert["type"]>('alert alert-primary');
 
   const param = useParams()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (param.matricula) {
@@ -49,30 +50,39 @@ const UsuarioPage = () => {
     e.preventDefault();
     var telefone = tel.replace("-", "").replace("(", "").replace(")", "").replace(" ", "")
 
-    // handleRegister(user).then(res => {
-    //   if (res.status === 200) {
-    //     const data = res.CadastroResposta as Usuario
-    //     setMessage(`Usuário ${data.nomeCompleto} cadastrado com sucesso! Login com a matricula: ${data.matricula}`)
-    //     setAlert(true)
-    //     setAlertType('alert alert-success')
-    //     setTimeout(() => {
-    //       setMessage('')
-    //       setAlert(false)
-    //       setAlertType('alert alert-primary')
-    //     }, 2500)
+    const user = {
+      matricula: Number.parseInt(param.matricula!),
+      nomeCompleto: nomeCompleto,
+      telefone: telefone,
+      funcao: funcao,
+      email: email,
+    }
 
-    //   } else if (res.status !== 200) {
-    //     const data = res.CadastroResposta as Error
-    //     setMessage(data.Error)
-    //     setAlert(true)
-    //     setAlertType('alert alert-danger')
-    //     setTimeout(() => {
-    //       setMessage('')
-    //       setAlert(false)
-    //       setAlertType('alert alert-primary')
-    //     }, 5000)
-    //   }
-    // });
+    handleEditarUsuario(param.matricula!, user).then(res => {
+      if (res.status === 200) {
+        const data = res.resposta as UsuarioOut
+        setMessage(`Usuário ${data.nomeCompleto} Alterado com sucesso! Login com a matricula: ${data.matricula}`)
+        setAlert(true)
+        setAlertType('alert alert-success')
+        setTimeout(() => {
+          setMessage('')
+          setAlert(false)
+          setAlertType('alert alert-primary')
+          navigate('/usuarios')
+        }, 2500)
+
+      } else if (res.status !== 200) {
+        const data = res.resposta as ErrorEditar
+        setMessage(data.error)
+        setAlert(true)
+        setAlertType('alert alert-danger')
+        setTimeout(() => {
+          setMessage('')
+          setAlert(false)
+          setAlertType('alert alert-primary')
+        }, 5000)
+      }
+    });
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -88,7 +98,7 @@ const UsuarioPage = () => {
         {alert ? <Alert type={alertType} message={message} /> : ''}
         <form onSubmit={handleSubmit} className="w-100 form-content p-5 rounded">
           <InputForm inputStyle="input" id="nome" placeholder="Nome Completo" set={(e) => setNome(e.target.value)} type="text" value={nomeCompleto} />
-          <InputForm inputStyle="input" id="email" placeholder="Email" set={(e) => setEmail(e.target.value)} type="email" value={email} />
+          <InputForm inputStyle="input" id="email" placeholder="Email" type="email" value={email} disabled={true} />
           <InputForm inputStyle="input" id="telefone" placeholder="Telefone" set={handleChange} type="text" value={tel} />
           <div className="form-floating">
             <select value={funcao} onChange={(e) => setFuncao(e.target.value)} className="form-select" id="funcao">

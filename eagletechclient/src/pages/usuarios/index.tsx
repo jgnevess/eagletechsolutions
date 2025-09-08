@@ -25,10 +25,11 @@ const Usuarios = () => {
   }, [page, hasMore]);
 
   const handleByNome = (e: string) => {
+    setHasMore(true);
+    setPage(1)
     setUsuarios([])
     setNome(e)
     if (e === "") {
-      setPage(1)
       handleGetAllUsuarios(page, 10).then(res => {
         const data = res.resposta as Usuario[];
         if (data.length === 0) {
@@ -36,6 +37,7 @@ const Usuarios = () => {
           return;
         }
         setUsuarios(prev => [...prev, ...data]);
+
       })
     }
     else {

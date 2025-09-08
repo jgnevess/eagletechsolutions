@@ -32,8 +32,6 @@ const LoginPage = () => {
             if (res.status === 200) {
                 const data = res.LoginResposta as LoginResposta
 
-                console.log(data)
-
                 sessionStorage.setItem("token", data.token);
                 sessionStorage.setItem("role", data.role);
                 sessionStorage.setItem("matricula", data.matricula.toLocaleString())
@@ -45,15 +43,15 @@ const LoginPage = () => {
                 }
                 else {
                     if (data.role === "ADMIN") {
-                        return navigate('/')
+                        return navigate('/admin')
                     }
 
                     if (data.role === "TECNICO") {
-                        return navigate('/')
+                        return navigate('/tec')
                     }
 
                     if (data.role === "SOLICITANTE") {
-                        return navigate('/');
+                        return navigate('/sol');
                     }
 
                     return navigate('/');

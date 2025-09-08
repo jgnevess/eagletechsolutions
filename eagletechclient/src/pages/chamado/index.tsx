@@ -107,7 +107,6 @@ const Chamado = () => {
     const handleCancelar = () => {
         const numeroChamado = Number.parseInt(param.id!);
         handleCancelarChamado(numeroChamado).then(response => {
-            console.log(response.status)
             if (response.status !== 204) {
                 const data = response.data as Error;
                 setAlert(true)
@@ -144,12 +143,18 @@ const Chamado = () => {
                         <h5>Abertura: {new Date(chamado?.abertura!).toLocaleString()}</h5>
                         <h5>Fechamento: {chamado?.fechamento !== '0001-01-01T00:00:00' ? new Date(chamado?.fechamento!).toLocaleString() : 'n/a'}</h5>
                     </div>
+                    <div className="d-flex justify-content-between card-header">
+                        <h5>Solicitante: {chamado?.solicitante.nomeCompleto}</h5>
+                        <h5>Email: {chamado?.solicitante.email}</h5>
+                        <a target="_blank" href={`https://wa.me/${chamado?.solicitante.telefone}`}><i className="bi bi-whatsapp"></i> Telefone: {chamado?.solicitante.telefone}</a>
+                    </div>
                     <div className="card-body">
-                        <h5 className="card-title">{chamado?.titulo}</h5>
+                        <h1 className="card-title">Titulo: {chamado?.titulo}</h1>
                         <div className="d-flex flex-column text-start" style={{ height: '50vh' }}>
                             <h4 className="card-text">Descrição: </h4>
                             <p className="card-text">{chamado?.descricao}</p>
                         </div>
+
                         <div className="d-flex justify-content-around card-header">
                             <h5>Status: {chamado?.status}</h5>
                             <h5>Prioridade: {chamado?.prioridade}</h5>
@@ -157,6 +162,7 @@ const Chamado = () => {
                             {chamado?.status === Status.ABERTO ? ' ' : <h5>Técnico responsavel: {chamado?.tecnico?.nomeCompleto}</h5>}
 
                         </div>
+
                         <div className="d-flex justify-content-around">
                             {
                                 chamado?.status === Status.ABERTO && sessionStorage.getItem("role") === "TECNICO" ?
@@ -201,7 +207,7 @@ const Chamado = () => {
                     </div>
                 </div>
             </>
-        </Container>
+        </Container >
     )
 }
 

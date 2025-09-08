@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ChatPage from "../pages/ChatPage";
 import AboutUser from "../pages/Home";
 import NotFound from "../pages/notfound";
 import LoginPage from "../pages/login";
@@ -18,13 +17,13 @@ import Usuarios from "../pages/usuarios";
 import UsuarioPage from "../pages/usuario";
 import AdminDashboard from "../pages/admindashboard";
 import CadastrarUsuarioPage from "../pages/cadastrar-usuario";
+import EditarNovaSenha from "../pages/nova-senha-editar";
 
 const Routers = () => {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="*" element={<NotFound />} />
-                <Route path="/chat/:numeroChamado" element={<ChatPage />} />
                 <Route path="/login" element={<LoginPage />} />
 
                 <Route path="/about" element={
@@ -35,6 +34,11 @@ const Routers = () => {
                 <Route path="/nova-senha" element={
                     <PrivateRouter roles={["SOLICITANTE", "ADMIN", "TECNICO"]}>
                         <NovaSenha />
+                    </PrivateRouter>
+                } />
+                <Route path="/alterar-senha" element={
+                    <PrivateRouter roles={["SOLICITANTE", "ADMIN", "TECNICO"]}>
+                        <EditarNovaSenha />
                     </PrivateRouter>
                 } />
                 <Route path="/admin" element={

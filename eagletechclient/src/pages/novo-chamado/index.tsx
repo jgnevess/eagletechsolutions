@@ -5,6 +5,7 @@ import InputForm from "../../components/inputForm";
 import { Categoria, Chamado, ChamadoAberto, handleAbrirChamado } from "../../service/chamado";
 import { Error, Usuario } from "../../service/login";
 import Alert, { PropsAlert } from "../../components/alert";
+import Chatbot from "../../components/chatbot";
 
 const NovoChamado = () => {
 
@@ -117,6 +118,8 @@ const NovoChamado = () => {
                         <button className="btn btn-dark">Abrir chamado</button>
                     </div>
                 </form>
+
+                <Chatbot />
 
             </>
         </Container>
