@@ -42,7 +42,7 @@ namespace eagletechapi.Controllers
 
         [HttpPost("register")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> Register([FromBody] UsuarioIn usuarioIn)
+        public async Task<IActionResult> Register([FromBody] UserIn userIn)
         {
             if (!ModelState.IsValid) return BadRequest(new Dictionary<string, string>()
             {
@@ -50,7 +50,7 @@ namespace eagletechapi.Controllers
             });
             try
             {
-                var res = await _userService.CadastrarUsuario(usuarioIn);
+                var res = await _userService.CadastrarUsuario(userIn);
                 return Ok(res);
             }
             catch (Exception e)

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { handleMudarSenha } from "../../service/usuario";
+import { handleMudarSenha } from "../../service/user/userService";
 import { redirect, useNavigate } from "react-router-dom";
 import Alert, { PropsAlert } from "../../components/alert";
 import Container from "../../components/container";
 import { handleFirstLogin } from "../../service/firstlogin";
-import { Error } from "../../service/login";
+import { Error } from "../../service/login/login.models";
+import { SimplePasswordUpdate } from "../../service/user/user.models";
 
 
 const NovaSenha = () => {
@@ -25,9 +26,9 @@ const NovaSenha = () => {
 
         const payload = {
             matricula: Number.parseInt(sessionStorage.getItem("matricula")!),
-            senhaNova: senha,
-            confirmacaoNova: confirmar
-        }
+            newPassword: senha,
+            confirmNewPassword: confirmar
+        } as SimplePasswordUpdate
 
         handleMudarSenha(payload).then(res => {
             if (res.status === 200) {
@@ -44,7 +45,7 @@ const NovaSenha = () => {
                 }, 2500)
 
             } else if (res.status === 400) {
-                const data = res.resposta as Error
+                const data = res.response as Error
                 setMessage(data.Error)
                 setAlert(true)
                 setAlertType('alert alert-danger')

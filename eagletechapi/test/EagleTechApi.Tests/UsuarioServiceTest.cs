@@ -26,9 +26,9 @@ namespace eagletechapi.test.service
             return new AppDbContext(options);
         }
 
-        private UsuarioIn CriarUsuario()
+        private UserIn CriarUsuario()
         {
-            UsuarioIn usuarioIn = new()
+            UserIn userIn = new()
             {
                 NomeCompleto = "João Silva",
                 Senha = "Senhapadrao1*",
@@ -37,7 +37,7 @@ namespace eagletechapi.test.service
                 Email = "joao@testeemail.com"
             };
 
-            return usuarioIn;
+            return userIn;
         }
 
         [Fact]
@@ -366,7 +366,7 @@ namespace eagletechapi.test.service
             var context = GetInMemoryDb();
             var service = new UserService(context);
 
-            var ex = await Assert.ThrowsAsync<Exception>(() => service.EditarUsuario(1, new UsuarioUpdateIn()));
+            var ex = await Assert.ThrowsAsync<Exception>(() => service.EditarUsuario(1, new UserUpdateIn()));
 
             Assert.Equal("Usuario não encontrado", ex.Message);
         }
@@ -385,7 +385,7 @@ namespace eagletechapi.test.service
             Funcao funcao = Funcao.TECNICO;
             string email = "joaoteste@testeemail.com";
 
-            var res = await service.EditarUsuario(matricula, new UsuarioUpdateIn()
+            var res = await service.EditarUsuario(matricula, new UserUpdateIn()
             {
                 Matricula = matricula,
                 NomeCompleto = nome,
@@ -419,7 +419,7 @@ namespace eagletechapi.test.service
 
             var ex = await Assert.ThrowsAsync<ValidationException>(() => service.
                 EditarUsuario(matricula,
-                    new UsuarioUpdateIn()
+                    new UserUpdateIn()
                     {
                         Matricula = matricula,
                         NomeCompleto = nome,

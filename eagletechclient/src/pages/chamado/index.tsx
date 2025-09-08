@@ -3,8 +3,8 @@ import Container from "../../components/container";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ChamadoAberto, ChamadoDatails, handleAceitarChamado, handleBuscarChamado, handleCancelarChamado, handleFinalizarChamado, Status } from "../../service/chamado";
 import Alert, { PropsAlert } from "../../components/alert";
-import { Error } from "../../service/login";
 import { useFirstLogin } from "../../hooks/useFirstLogin";
+import { Error } from "../../service/login/login.models";
 
 
 const Chamado = () => {

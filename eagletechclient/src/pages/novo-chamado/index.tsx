@@ -3,9 +3,9 @@ import { useFirstLogin } from "../../hooks/useFirstLogin";
 import Container from "../../components/container";
 import InputForm from "../../components/inputForm";
 import { Categoria, Chamado, ChamadoAberto, handleAbrirChamado } from "../../service/chamado";
-import { Error, Usuario } from "../../service/login";
 import Alert, { PropsAlert } from "../../components/alert";
 import Chatbot from "../../components/chatbot";
+import { Error, UserOut } from "../../service/login/login.models";
 
 const NovoChamado = () => {
 
@@ -35,7 +35,7 @@ const NovoChamado = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const usuario = JSON.parse(sessionStorage.getItem("usuario")!) as Usuario;
+        const usuario = JSON.parse(sessionStorage.getItem("usuario")!) as UserOut;
         const usuarioId = Number(usuario.matricula);
 
         if (categoria === 'Selecione uma categoria') {

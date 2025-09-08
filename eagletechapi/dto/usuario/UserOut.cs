@@ -7,12 +7,13 @@ using eagletechapi.models.usuario;
 
 namespace eagletechapi.dto.usuario
 {
-    public class UsuarioOut(Usuario usuario)
+    public class UserOut(Usuario usuario)
     {
         public int Matricula { get; set; } = usuario.Matricula;
         public string NomeCompleto { get; set; } = usuario.NomeCompleto;
         public string Telefone { get; set; } = usuario.Telefone;
         public Funcao Funcao { get; set; } = usuario.Funcao;
         public string Email { get; set; } = usuario.Email;
+        public bool Ativo { get; set; } = usuario.Ativo;
     }
 }

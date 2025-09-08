@@ -34,9 +34,9 @@ namespace eagletechapi.test.EagleTechApi.Tests
             return new AppDbContext(options);
         }
 
-        private static UsuarioIn CriarUsuarioSolicitante()
+        private static UserIn CriarUsuarioSolicitante()
         {
-            UsuarioIn usuarioIn = new()
+            UserIn userIn = new()
             {
                 NomeCompleto = "João Sol",
                 Senha = "SenhaSuperDificil123*",
@@ -44,12 +44,12 @@ namespace eagletechapi.test.EagleTechApi.Tests
                 Funcao = Funcao.SOLICITANTE,
                 Email = "joao@sol.com"
             };
-            return usuarioIn;
+            return userIn;
         }
         
-        private static UsuarioIn CriarUsuarioTecnico()
+        private static UserIn CriarUsuarioTecnico()
         {
-            UsuarioIn usuarioIn = new()
+            UserIn userIn = new()
             {
                 NomeCompleto = "João Tec",
                 Senha = "SenhaSuperDificil123*",
@@ -57,7 +57,7 @@ namespace eagletechapi.test.EagleTechApi.Tests
                 Funcao = Funcao.TECNICO,
                 Email = "joao@tec.com"
             };
-            return usuarioIn;
+            return userIn;
         }
         
         [Fact]

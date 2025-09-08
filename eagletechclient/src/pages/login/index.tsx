@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Error, handleLoginAsync, LoginResposta } from "../../service/login";
+import { handleLoginAsync } from "../../service/login/login";
 import { useNavigate } from "react-router-dom";
 import Alert, { PropsAlert } from "../../components/alert";
 import Container from "../../components/container";
 import { useFirstLogin } from "../../hooks/useFirstLogin";
+import { Error, LoginDto, LoginResponse } from "../../service/login/login.models";
 
 
 const LoginPage = () => {
@@ -28,14 +29,16 @@ const LoginPage = () => {
     const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        handleLoginAsync(matricula, senha).then(res => {
+        const payload = { matricula: matricula, password: senha } as LoginDto
+
+        handleLoginAsync(payload).then(res => {
             if (res.status === 200) {
-                const data = res.LoginResposta as LoginResposta
+                const data = res.response as LoginResponse
 
                 sessionStorage.setItem("token", data.token);
                 sessionStorage.setItem("role", data.role);
                 sessionStorage.setItem("matricula", data.matricula.toLocaleString())
-                sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
+                sessionStorage.setItem("usuario", JSON.stringify(data.user));
                 sessionStorage.setItem("first", JSON.stringify(data.firstLogin));
 
                 if (data.firstLogin) {
@@ -58,7 +61,7 @@ const LoginPage = () => {
                 }
 
             } else if (res.status === 400) {
-                const data = res.LoginResposta as Error
+                const data = res.response as Error
                 setMessage(data.Error)
                 setAlert(true)
                 setAlertType('alert alert-danger')

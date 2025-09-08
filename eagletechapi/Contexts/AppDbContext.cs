@@ -14,17 +14,6 @@ namespace eagletechapi.Contexts
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Chamado> Chamados { get; set; }
-        public DbSet<Chatbot> Chatbots { get; set; }
-        public DbSet<Message> Messages { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Chatbot>()
-                .HasMany(c => c.Conversation)
-                .WithOne(m => m.Chatbot)
-                .HasForeignKey(m => m.ChatbotId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
     }
 }

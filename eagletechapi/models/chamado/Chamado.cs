@@ -21,7 +21,6 @@ namespace eagletechapi.models.chamado
         public Categoria Categoria { get; set; }
         public DateTime Abertura { get; set; }
         public DateTime Fechamento { get; set; }
-        public Chatbot? Chatbot { get; set; }
         public Usuario Solicitante { get; set; }
         public Usuario? Tecnico { get; set; }
 
@@ -35,7 +34,6 @@ namespace eagletechapi.models.chamado
             this.Categoria = Categoria.OUTROS;
             this.Abertura = DateTime.Now;
             this.Fechamento = DateTime.Now;
-            this.Chatbot = null;
             this.Solicitante = null;
             this.Tecnico = null;
         }
@@ -50,7 +48,6 @@ namespace eagletechapi.models.chamado
             this.Categoria = chamadoIn.Categoria;
             this.Abertura = DateTime.Now;
             this.Fechamento = DateTime.MinValue;
-            this.Chatbot = new Chatbot();
             this.Solicitante = solicitante;
             this.Tecnico = null;
         }

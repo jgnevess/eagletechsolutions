@@ -26,9 +26,9 @@ namespace EagleTechApi.Tests
             return new AppDbContext(options);
         }
 
-        private UsuarioIn CriarUsuario()
+        private UserIn CriarUsuario()
         {
-            UsuarioIn usuarioIn = new()
+            UserIn userIn = new()
             {
                 NomeCompleto = "João Silva",
                 Senha = "Senhapadrao1*",
@@ -37,7 +37,7 @@ namespace EagleTechApi.Tests
                 Email = "joao@testeemail.com"
             };
 
-            return usuarioIn;
+            return userIn;
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace EagleTechApi.Tests
             var dto = new LoginDto()
             {
                 Matricula = 1,
-                Senha = "Senhapadrao1*"
+                Password = "Senhapadrao1*"
             };
 
             var res = await auth.Login(dto);
@@ -87,7 +87,7 @@ namespace EagleTechApi.Tests
             var dto = new LoginDto()
             {
                 Matricula = 99,
-                Senha = "Senhapadrao1*"
+                Password = "Senhapadrao1*"
             };
 
             var ex = await Assert.ThrowsAsync<Exception>(() => auth.Login(dto));
@@ -111,7 +111,7 @@ namespace EagleTechApi.Tests
             var dto = new LoginDto()
             {
                 Matricula = 1,
-                Senha = "SenhaSuperDificil123"
+                Password = "SenhaSuperDificil123"
             };
 
             var ex = await Assert.ThrowsAsync<Exception>(() => auth.Login(dto));

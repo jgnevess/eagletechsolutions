@@ -18,6 +18,7 @@ import UsuarioPage from "../pages/usuario";
 import AdminDashboard from "../pages/admindashboard";
 import CadastrarUsuarioPage from "../pages/cadastrar-usuario";
 import EditarNovaSenha from "../pages/nova-senha-editar";
+import Logout from "../pages/logout";
 
 const Routers = () => {
     return (
@@ -25,6 +26,7 @@ const Routers = () => {
             <Routes>
                 <Route path="*" element={<NotFound />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/logout" element={<Logout />} />
 
                 <Route path="/about" element={
                     <PrivateRouter roles={["SOLICITANTE", "ADMIN", "TECNICO"]}>

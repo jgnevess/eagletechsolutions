@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Error, handleRegister, Usuario, UsuarioCadastro } from "../../service/login";
+import { handleRegister } from "../../service/login/login";
 import Alert, { PropsAlert } from "../alert";
 import InputForm from "../inputForm";
+import { Error, UserIn, UserOut } from "../../service/login/login.models";
 
 const CadastrarUsuario = () => {
 
@@ -24,11 +25,11 @@ const CadastrarUsuario = () => {
             telefone,
             funcao,
             email
-        } as UsuarioCadastro
+        } as UserIn
 
         handleRegister(user).then(res => {
             if (res.status === 200) {
-                const data = res.CadastroResposta as Usuario
+                const data = res.response as UserOut
                 setMessage(`Usuário ${data.nomeCompleto} cadastrado com sucesso! Login com a matricula: ${data.matricula}`)
                 setAlert(true)
                 setAlertType('alert alert-success')
@@ -39,7 +40,7 @@ const CadastrarUsuario = () => {
                 }, 2500)
 
             } else if (res.status !== 200) {
-                const data = res.CadastroResposta as Error
+                const data = res.response as Error
                 setMessage(data.Error)
                 setAlert(true)
                 setAlertType('alert alert-danger')

@@ -26,10 +26,12 @@ namespace eagletechapi.service.implements
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(loginDto.Matricula)) ??
             throw new Exception("Usuario não encontrado, solicite o cadastro com um Administrador");
 
+            if(!usuario.Ativo) throw new Exception("Usuario não encontrado, solicite o cadastro com um Administrador");
+            
             // Compara o hash da senha recebida do frontend com o hash do banco de dados
             // Se não forem iguais, lança uma exceção
             
-            if (!BCrypt.Net.BCrypt.Verify(loginDto.Senha, usuario.Senha)) throw new Exception("Senha incorreta");
+            if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, usuario.Senha)) throw new Exception("Senha incorreta");
             
             
             // Cria um array de claims (informações do usuário) que serão incluídas no token
@@ -64,8 +66,8 @@ namespace eagletechapi.service.implements
                 new JwtSecurityTokenHandler().WriteToken(token),
                 usuario.Funcao.ToString(), 
                 usuario.Matricula,
-                new UsuarioOut(usuario),
-                usuario.firstLogin
+                new UserOut(usuario),
+                usuario.FirstLogin
                 );
         }
     }

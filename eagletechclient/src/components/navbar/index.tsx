@@ -11,21 +11,21 @@ const Navbar = (props: Props) => {
         { nome: 'Usuarios', url: '/usuarios' },
         { nome: 'Cadastro', url: '/cadastro' },
         { nome: 'Meus dados', url: '/about' },
-        { nome: 'Sair', url: '/login' }
+        { nome: 'Sair', url: '/logout' }
     ]
 
     const SolicitanteLinks = [
         { nome: 'Chamados', url: '/chamados' },
         { nome: 'Abrir Chamado', url: '/novo-chamado' },
         { nome: 'Meus dados', url: '/about' },
-        { nome: 'Sair', url: '/login' }
+        { nome: 'Sair', url: '/logout' }
     ]
 
     const TecnicoLinks = [
         { nome: 'Chamados Abertos', url: '/chamados-abertos' },
         { nome: 'Chamados Atendidos', url: '/chamados-atendidos' },
         { nome: 'Meus dados', url: '/about' },
-        { nome: 'Sair', url: '/login' }
+        { nome: 'Sair', url: '/logout' }
     ]
 
     const Links = props.role === "ADMIN" ? AdminLinks.map((i, k) => {

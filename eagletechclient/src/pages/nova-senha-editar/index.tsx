@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { handleAlterarSenhaUsuario, handleMudarSenha } from "../../service/usuario";
+import { handleAlterarSenhaUsuario, handleMudarSenha } from "../../service/user/userService";
 import { redirect, useNavigate, useParams } from "react-router-dom";
 import Alert, { PropsAlert } from "../../components/alert";
 import Container from "../../components/container";
 import { handleFirstLogin } from "../../service/firstlogin";
-import { Error } from "../../service/login";
+import { PasswordUpdate } from "../../service/user/user.models";
 
 
 const EditarNovaSenha = () => {
@@ -24,28 +24,28 @@ const EditarNovaSenha = () => {
 
         const payload = {
             matricula: matricula,
-            senhaAntiga: senhaAntiga,
-            senhaNova: senha,
-            confirmacaoNova: confirmar
-        }
+            oldPassword: senhaAntiga,
+            newPassword: senha,
+            confirmNewPassword: confirmar
+        } as PasswordUpdate
 
 
         handleAlterarSenhaUsuario(payload).then(res => {
             if (res.status === 200) {
-                setMessage("Sua senha foi alterada! Você será redirecionado")
+                setMessage("Sua senha foi alterada com sucesso!")
                 setAlert(true)
                 setAlertType('alert alert-success')
-
+                setAntiga('')
+                setConfirmar('')
+                setSenha('')
                 setTimeout(() => {
                     setMessage('')
                     setAlert(false)
                     setAlertType('alert alert-primary')
-                    sessionStorage.clear();
-                    window.location.href = '/login'
                 }, 2500)
 
             } else if (res.status === 400) {
-                const data = res.resposta;
+                const data = res.response;
                 console.log(res)
                 setMessage(data)
                 setAlert(true)

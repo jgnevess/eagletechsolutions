@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { handleAbrirChamado } from "../../service/chamado";
 import { Link, useNavigate } from "react-router-dom";
-import { Usuario } from "../../service/login";
 import Container from "../../components/container";
 import { handleFirstLogin } from "../../service/firstlogin";
 import { useFirstLogin } from "../../hooks/useFirstLogin";
+import { UserOut } from "../../service/login/login.models";
 
 
 
@@ -12,7 +12,7 @@ const AboutUser = () => {
 
     const navigate = useNavigate();
 
-    const u = JSON.parse(sessionStorage.getItem("usuario")!) as Usuario;
+    const u = JSON.parse(sessionStorage.getItem("usuario")!) as UserOut;
 
     useFirstLogin();
 
@@ -33,8 +33,7 @@ const AboutUser = () => {
 
                 <div className="d-flex justify-content-around">
                     <button className="btn btn-dark" onClick={() => {
-                        sessionStorage.clear();
-                        window.location.href = '/login'
+                        window.location.href = '/logout'
                     }}>Sair</button>
 
                     <Link to={"/alterar-senha"} className="btn btn-dark">Alterar senha</Link>

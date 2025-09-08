@@ -3,9 +3,9 @@ import { useFirstLogin } from "../../hooks/useFirstLogin";
 import Container from "../../components/container";
 import InputForm from "../../components/inputForm";
 import { Categoria, Chamado, ChamadoAberto, ChamadoDatails, handleAbrirChamado, handleBuscarChamado, handleEditarChamado } from "../../service/chamado";
-import { Error, Usuario } from "../../service/login";
 import Alert, { PropsAlert } from "../../components/alert";
 import { useNavigate, useParams } from "react-router-dom";
+import { Error, UserOut } from "../../service/login/login.models";
 
 const EditarChamado = () => {
 
@@ -61,7 +61,7 @@ const EditarChamado = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const usuario = JSON.parse(sessionStorage.getItem("usuario")!) as Usuario;
+        const usuario = JSON.parse(sessionStorage.getItem("usuario")!) as UserOut;
         const usuarioId = Number(usuario.matricula);
 
         if (categoria === 'Selecione uma categoria') {

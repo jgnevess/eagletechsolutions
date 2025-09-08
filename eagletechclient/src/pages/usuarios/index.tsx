@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Container from "../../components/container";
-import { handleGetAllUsuarios, handleGetAllUsuariosByNome, Usuario } from "../../service/usuario";
+import { handleGetAllUsuarios, handleGetAllUsuariosByNome } from "../../service/user/userService";
 import { useNavigate } from "react-router-dom";
 import InputForm from "../../components/inputForm";
+import { UserOut } from "../../service/login/login.models";
 
 const Usuarios = () => {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [usuarios, setUsuarios] = useState<UserOut[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [nome, setNome] = useState('')
@@ -15,7 +16,7 @@ const Usuarios = () => {
     if (!hasMore) return;
 
     handleGetAllUsuarios(page, 10).then(res => {
-      const data = res.resposta as Usuario[];
+      const data = res.response as UserOut[];
       if (data.length === 0) {
         setHasMore(false);
         return;
@@ -31,7 +32,7 @@ const Usuarios = () => {
     setNome(e)
     if (e === "") {
       handleGetAllUsuarios(page, 10).then(res => {
-        const data = res.resposta as Usuario[];
+        const data = res.response as UserOut[];
         if (data.length === 0) {
           setHasMore(false);
           return;
@@ -42,7 +43,7 @@ const Usuarios = () => {
     }
     else {
       handleGetAllUsuariosByNome(e).then(response => {
-        const data = response.resposta as Usuario[]
+        const data = response.response as UserOut[]
         setUsuarios(data)
       })
     }

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios"
-import { Error } from "./login"
+import { Error } from "./login/login.models";
 
 const headers = () => {
     return {

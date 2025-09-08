@@ -6,7 +6,7 @@ using eagletechapi.entity.usuario;
 
 namespace eagletechapi.dto.usuario
 {
-    public class UsuarioUpdateIn
+    public class UserUpdateIn
     {
         public int Matricula { get; set; } = 0;
         public string NomeCompleto { get; set; } = string.Empty;

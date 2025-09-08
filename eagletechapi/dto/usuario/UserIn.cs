@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace eagletechapi.dto.usuario
 {
-    public class UsuarioIn
+    public class UserIn
     {
         [Required]
         public string NomeCompleto { get; set; } = string.Empty;
