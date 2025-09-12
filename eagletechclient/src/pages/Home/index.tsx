@@ -18,7 +18,7 @@ const AboutUser = () => {
 
     return (
         <Container>
-            <div className="form-content p-5 rounded w-75 text-center">
+            <div className="form-content p-5 rounded w-75 text-center text-light">
                 <h1>Página protegida</h1>
                 <h4>Se você entrou nessa página tem um login com as credenciais válidas</h4>
 
@@ -32,10 +32,6 @@ const AboutUser = () => {
                 </ul>
 
                 <div className="d-flex justify-content-around">
-                    <button className="btn btn-dark" onClick={() => {
-                        window.location.href = '/logout'
-                    }}>Sair</button>
-
                     <Link to={"/alterar-senha"} className="btn btn-dark">Alterar senha</Link>
                 </div>
             </div>

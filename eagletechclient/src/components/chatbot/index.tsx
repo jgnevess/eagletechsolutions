@@ -35,8 +35,8 @@ const ChatWidget = () => {
       </button>
 
       {open && (
-        <div className="card bg-dark" style={{ width: 300, height: 400, marginTop: 10 }}>
-          <div className="card-body text-light d-flex flex-column">
+        <div className="card" style={{ width: 300, height: 400, marginTop: 10 }}>
+          <div className="card-body d-flex flex-column">
             <div
               className="flex-grow-1 overflow-auto mb-2"
               style={{ maxHeight: 320 }}
@@ -45,8 +45,8 @@ const ChatWidget = () => {
                 <div
                   key={i}
                   className={`p-2 my-1 rounded ${m.from === "user"
-                    ? "bg-primary text-white text-end py-2"
-                    : "bg-secondary text-start py-2"
+                    ? "bg-chat-user text-white text-end py-2"
+                    : "bg-chat-bot text-start py-2"
                     }`}
                 >
                   {m.from === "bot" ? <Markdown>{m.text}</Markdown> : m.text}
@@ -57,13 +57,13 @@ const ChatWidget = () => {
             <div className="input-group">
               <input
                 type="text"
-                className="form-control bg-dark text-light"
+                className="form-control"
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && sendMessage()}
                 placeholder="Digite sua mensagem..."
               />
-              <button className="btn btn-secondary" onClick={sendMessage}>
+              <button className="btn btn-dark" onClick={sendMessage}>
                 Enviar
               </button>
             </div>

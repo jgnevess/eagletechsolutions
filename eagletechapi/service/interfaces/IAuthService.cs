@@ -8,6 +8,6 @@ namespace eagletechapi.service.interfaces
 {
     public interface IAuthService
     {
-        Task<LoginResponse> Login(LoginDto loginDto);
+        Task<LoginResponse> Login(CredentialsLogin credentialsLogin);
     }
 }

@@ -138,7 +138,7 @@ const Chamado = () => {
             <>
                 {alert ? <Alert message={message} type={alertType} /> : ''}
 
-                <div className="card bg-dark text-light w-75">
+                <div className="card w-75">
                     <div className="d-flex justify-content-between card-header">
                         <h5>Abertura: {new Date(chamado?.abertura!).toLocaleString()}</h5>
                         <h5>Fechamento: {chamado?.fechamento !== '0001-01-01T00:00:00' ? new Date(chamado?.fechamento!).toLocaleString() : 'n/a'}</h5>
@@ -190,7 +190,7 @@ const Chamado = () => {
 
                 <div className="modal fade" id="deleteModal" aria-labelledby="deleteModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
-                        <div className="modal-content bg-dark text-light">
+                        <div className="modal-content">
                             <div className="modal-header">
                                 <h1 className="modal-title fs-5" id="deleteModalLabel">Cancelar chamado</h1>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

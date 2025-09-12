@@ -17,13 +17,13 @@ namespace eagletechapi.service.implements
 {
     public class AuthService(AppDbContext context, IConfiguration configuration) : IAuthService
     {
-        public async Task<LoginResponse> Login(LoginDto loginDto)
+        public async Task<LoginResponse> Login(CredentialsLogin credentialsLogin)
         {
             
             // Busca o usuário no banco de dados pela matrícula recebida no LoginDto
             // Caso não encontre, lança uma exceção
             
-            var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Matricula.Equals(loginDto.Matricula)) ??
+            var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Email.Equals(credentialsLogin.Username)) ??
             throw new Exception("Usuario não encontrado, solicite o cadastro com um Administrador");
 
             if(!usuario.Ativo) throw new Exception("Usuario não encontrado, solicite o cadastro com um Administrador");
@@ -31,7 +31,7 @@ namespace eagletechapi.service.implements
             // Compara o hash da senha recebida do frontend com o hash do banco de dados
             // Se não forem iguais, lança uma exceção
             
-            if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, usuario.Senha)) throw new Exception("Senha incorreta");
+            if (!BCrypt.Net.BCrypt.Verify(credentialsLogin.Password, usuario.Senha)) throw new Exception("Senha incorreta");
             
             
             // Cria um array de claims (informações do usuário) que serão incluídas no token

@@ -31,7 +31,7 @@ const TabelaChamados = ({ chamados }: Props) => {
         <div className="w-100 d-flex justify-content-center" style={{
             overflowY: "auto"
         }}>
-            <table className="table table-dark table-hover w-75">
+            <table className="table table-hover w-100">
                 <thead>
                     <tr>
                         <th scope="col">Nº</th>

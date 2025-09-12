@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Error, LoginDto, LoginResponse, Response, UserIn, UserOut } from "./login.models";
+import { Error, LoginCredentials, LoginResponse, Response, UserIn, UserOut } from "./login.models";
 
 const headers = () => {
     return {
@@ -10,7 +10,7 @@ const headers = () => {
 
 const apiUrl = `${process.env.REACT_APP_API_URL}/api/Auth`
 
-const handleLoginAsync = async (payload: LoginDto): Promise<Response> => {
+const handleLoginAsync = async (payload: LoginCredentials): Promise<Response> => {
     try {
         const res = await axios.post<LoginResponse>(`${apiUrl}/login`, payload);
         return { status: 200, response: res.data };

@@ -1,59 +1,8 @@
 .bg {
-    background-image: url("https://images.pexels.com/photos/176851/pexels-photo-176851.jpeg?_gl=1*o0bbmy*_ga*NjY0MTc1MDY2LjE3NTU4ODc3MTc.*_ga_8JE65Q40S6*czE3NTU4ODc3MTYkbzEkZzEkdDE3NTU4ODgwMTAkajUzJGwwJGgw");
-    background-size: cover;
-    /* background-image: url('../../../public/images/Login.png'); */
+    background-color: #f0f5f500;
 }
 
 .form-content {
     background-color: #0000009f;
     width: 80vh;
 }
-
-/* .btn-dark {
-    background-color: #000000b4;
-    font-weight: bold;
-    border-color: #fff;
-    color: #fff;
-}
-
-.btn-dark:hover {
-    background-color: #000000b4;
-    font-weight: bold;
-    border-color: #fff;
-    color: #fff;
-}
-
-.form-control {
-    background-color: #000000b4;
-    color: #fff;
-    border: none;
-}
-
-.form-control::placeholder {
-    color: #fff;
-    opacity: 0.8;
-}
-
-.form-control:focus {
-    background-color: #000000b4;
-    color: #fff;
-}
-
-
-.input-group .btn {
-    background-color: #000000b4;
-    border: #0000002f;
-    color: #fff;
-}
-
-.input-group .btn:hover {
-    background-color: #000000b4;
-    border: #0000006c;
-}
-
-.input-group span {
-    background-color: #000000b4;
-    border: #0000002f;
-    color: #fff;
-}
-*/

@@ -9,15 +9,19 @@ interface Props {
 
 const Container = (props: Props) => {
     return (
-        <>
-            <Navbar role={sessionStorage.getItem("role")!} />
-            <div className="w-100 bg text-light d-flex flex-column align-items-center" 
-            style={{
-                height: '90vh'
-            }}>
-                {props.children}
+        <div className="row">
+            <div className="col-3">
+                <Navbar role={sessionStorage.getItem("role")!} />
             </div>
-        </>
+            <div className="col-9">
+                <div className="w-100 bg d-flex flex-column align-items-center justify-content-center"
+                    style={{
+                        height: '100vh'
+                    }}>
+                    {props.children}
+                </div>
+            </div>
+        </div>
     )
 }
 

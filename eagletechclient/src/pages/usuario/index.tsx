@@ -181,9 +181,10 @@ const UsuarioPage = () => {
     <Container>
       <div className="w-50">
         {alert ? <Alert type={alertType} message={message} /> : ''}
-        <form onSubmit={handleSubmit} className="w-100 form-content p-5 rounded">
+        <form onSubmit={handleSubmit} className="w-100 p-5 rounded">
+          <h4>Editar usuário</h4>
           <InputForm inputStyle="input" id="nome" placeholder="Nome Completo" set={(e) => setNome(e.target.value)} type="text" value={nomeCompleto} />
-          <InputForm inputStyle="input" id="email" placeholder="Email" type="email" value={email} disabled={true} />
+          <InputForm inputStyle="input" id="email" placeholder="Username" type="email" value={email} disabled={true} />
           <InputForm inputStyle="input" id="telefone" placeholder="Telefone" set={handleChange} type="text" value={tel} />
           <div className="form-floating">
             <select value={funcao} onChange={(e) => setFuncao(e.target.value)} className="form-select" id="funcao">
@@ -207,9 +208,9 @@ const UsuarioPage = () => {
 
         <div className="modal fade" id="deleteModal" aria-labelledby="deleteModalLabel" aria-hidden="true">
           <div className="modal-dialog">
-            <div className="modal-content bg-dark text-light">
+            <div className="modal-content">
               <div className="modal-header">
-                <h1 className="modal-title fs-5" id="deleteModalLabel">Excluir usuario</h1>
+                <h1 className="modal-title fs-5" id="deleteModalLabel">Excluir usuário</h1>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">

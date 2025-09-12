@@ -64,7 +64,7 @@ const EditarNovaSenha = () => {
             <>
                 {alert ? <Alert type={alertType} message={message} /> : ''}
 
-                <form onSubmit={handleNewPassword} className="form-content p-5 rounded">
+                <form onSubmit={handleNewPassword} className="w-50 p-5 rounded">
                     <h4>Alterar senha</h4>
                     <div className="input-group input-group-lg mb-3">
                         <input
@@ -105,7 +105,9 @@ const EditarNovaSenha = () => {
                             className="btn btn-outline-secondary"
                             type="button"><i className="bi bi-eye"></i></button>
                     </div>
-                    <button type="submit" className="btn btn-dark">Alterar senha</button>
+                    <div className="d-grid">
+                        <button type="submit" className="btn btn-dark">Alterar senha</button>
+                    </div>
                 </form>
             </>
         </Container>

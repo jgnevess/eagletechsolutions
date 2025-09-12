@@ -15,7 +15,7 @@ const Usuarios = () => {
   useEffect(() => {
     if (!hasMore) return;
 
-    handleGetAllUsuarios(page, 10).then(res => {
+    handleGetAllUsuarios(page, 15).then(res => {
       const data = res.response as UserOut[];
       if (data.length === 0) {
         setHasMore(false);
@@ -31,7 +31,7 @@ const Usuarios = () => {
     setUsuarios([])
     setNome(e)
     if (e === "") {
-      handleGetAllUsuarios(page, 10).then(res => {
+      handleGetAllUsuarios(page, 15).then(res => {
         const data = res.response as UserOut[];
         if (data.length === 0) {
           setHasMore(false);
@@ -59,26 +59,26 @@ const Usuarios = () => {
   const USUARIOS = usuarios.map((u, k) => (
     <tr key={k} onClick={() => navigate(`/usuario/${u.matricula}`)} style={{ cursor: 'pointer' }}>
       <td>{u.matricula}</td>
-      <td>{u.nomeCompleto}</td>
-      <td>{u.email}</td>
+      <td className={u.ativo ? 'text-dark' : 'text-danger'}>{u.nomeCompleto}</td>
+      <td className={u.ativo ? 'text-dark' : 'text-danger'}>{u.email}</td>
       <td>{u.telefone}</td>
-      <td>{u.funcao}</td>
+      <td className={u.ativo ? 'text-dark' : 'text-danger'}>{u.ativo ? u.funcao : 'INATIVO'}</td>
     </tr>
   ));
 
   return (
     <Container>
       <>
-        <div style={{ height: '70vh', width: '75vw', overflow: 'auto' }} onScroll={handleScroll}>
+        <div className="d-flex flex-column justify-content-start w-100 mt-2" style={{ height: '100vh', width: '75vw', overflow: 'auto' }} onScroll={handleScroll}>
           <InputForm inputStyle="input" id="nome" placeholder="Buscar por nome" set={(e) => handleByNome(e.target.value)} type="text" value={nome} />
-          <table className="table table-dark table-striped w-100">
+          <table className="table table-striped w-100">
             <thead>
               <tr>
                 <th>Matricula</th>
                 <th>Nome</th>
-                <th>Email</th>
+                <th>Username</th>
                 <th>Telefone</th>
-                <th>Role</th>
+                <th>Perfil</th>
               </tr>
             </thead>
             <tbody>

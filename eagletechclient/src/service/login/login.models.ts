@@ -35,7 +35,7 @@ export interface UserIn {
   email: string;
 }
 
-export interface LoginDto {
-  matricula: string
+export interface LoginCredentials {
+  username: string
   password: string
 }

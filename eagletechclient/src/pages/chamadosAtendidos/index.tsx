@@ -33,8 +33,8 @@ const ChamadosAtendidos = () => {
 
     return (
         <Container>
-            <>
-                <div className="d-flex justify-content-around w-100">
+            <div className="d-flex flex-column justify-content-start w-100" style={{ height: '100vh' }}>
+                <div className="d-flex justify-content-around w-100 p-3">
                     <div className="form-check">
                         <input onChange={(e) => setStatus(e.target.value)} className="form-check-input" type="radio" name="status" id="Em_Andamento" value="EM_ANDAMENTO" checked={status === 'EM_ANDAMENTO'} />
                         <label className="form-check-label" htmlFor="Em_Andamento">
@@ -49,8 +49,7 @@ const ChamadosAtendidos = () => {
                     </div>
                 </div>
                 <TabelaChamados chamados={chamados!} />
-            </>
-
+            </div>
         </Container>
     )
 }

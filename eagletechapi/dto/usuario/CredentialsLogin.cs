@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace eagletechapi.dto.usuario
 {
-    public class LoginDto
+    public class CredentialsLogin
     {
         [Required]
-        public int Matricula { get; set; } = 0;
+        public string Username { get; set; } = string.Empty;
         
         [Required]
         public string Password { get; set; } = string.Empty;

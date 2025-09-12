@@ -18,7 +18,7 @@ namespace eagletechapi.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        public async Task<IActionResult> Login([FromBody] CredentialsLogin dto)
         {
             if (!ModelState.IsValid) return BadRequest(new Dictionary<string, string>()
             {

@@ -63,9 +63,10 @@ const CadastrarUsuario = () => {
     return (
         <>
             {alert ? <Alert type={alertType} message={message} /> : ''}
-            <form onSubmit={handleSubmit} className="w-100 form-content p-5 rounded">
+            <form onSubmit={handleSubmit} className="w-100 p-5 rounded">
+                <h2>Cadastrar Usuário</h2>
                 <InputForm inputStyle="input" id="nome" placeholder="Nome Completo" set={(e) => setNome(e.target.value)} type="text" value={nomeCompleto} />
-                <InputForm inputStyle="input" id="email" placeholder="Email" set={(e) => setEmail(e.target.value)} type="email" value={email} />
+                <InputForm inputStyle="input" id="email" placeholder="Username" set={(e) => setEmail(e.target.value)} type="email" value={email} />
                 <InputForm inputStyle="input" id="telefone" placeholder="Telefone" set={handleChange} type="text" value={tel} />
                 <div className="form-floating">
                     <select value={funcao} onChange={(e) => setFuncao(e.target.value)} className="form-select" id="funcao">

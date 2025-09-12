@@ -34,7 +34,7 @@ namespace EagleTechApi.Tests
                 Senha = "Senhapadrao1*",
                 Telefone = "16993000000",
                 Funcao = Funcao.ADMIN,
-                Email = "joao@testeemail.com"
+                Email = "joao@suporte"
             };
 
             return userIn;
@@ -53,9 +53,9 @@ namespace EagleTechApi.Tests
             var auth = new AuthService(context, mockConfig.Object);
 
             await service.CadastrarUsuario(usuarioIn);
-            var dto = new LoginDto()
+            var dto = new CredentialsLogin()
             {
-                Matricula = 1,
+                Username = "joao@suporte",
                 Password = "Senhapadrao1*"
             };
 
@@ -64,7 +64,7 @@ namespace EagleTechApi.Tests
             var handler = new JwtSecurityTokenHandler();
             var jwt = handler.ReadJwtToken((string) res.Token);
 
-            Assert.Equal("joao@testeemail.com", jwt.Claims.First(c => c.Type == ClaimTypes.Name).Value);
+            Assert.Equal("joao@suporte", jwt.Claims.First(c => c.Type == ClaimTypes.Name).Value);
             Assert.Equal("ADMIN", jwt.Claims.First(c => c.Type == ClaimTypes.Role).Value);
             Assert.False(string.IsNullOrEmpty((string) res.Token));
             Assert.Equal("ADMIN",(string) res.Role);
@@ -84,9 +84,9 @@ namespace EagleTechApi.Tests
             var auth = new AuthService(context, mockConfig.Object);
 
             await service.CadastrarUsuario(usuarioIn);
-            var dto = new LoginDto()
+            var dto = new CredentialsLogin()
             {
-                Matricula = 99,
+                Username = "joao@suporte1",
                 Password = "Senhapadrao1*"
             };
 
@@ -108,9 +108,9 @@ namespace EagleTechApi.Tests
             var auth = new AuthService(context, mockConfig.Object);
 
             await service.CadastrarUsuario(usuarioIn);
-            var dto = new LoginDto()
+            var dto = new CredentialsLogin()
             {
-                Matricula = 1,
+                Username = "joao@suporte",
                 Password = "SenhaSuperDificil123"
             };
 

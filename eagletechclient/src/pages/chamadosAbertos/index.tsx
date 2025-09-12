@@ -24,10 +24,12 @@ const ChamadosAbertos = () => {
         })
     }, [])
 
-    
+
     return (
         <Container>
-            <TabelaChamados chamados={chamados!} />
+            <div className="d-flex flex-column justify-content-start w-100" style={{ height: '100vh' }}>
+                <TabelaChamados chamados={chamados!} />
+            </div>
         </Container>
     )
 }

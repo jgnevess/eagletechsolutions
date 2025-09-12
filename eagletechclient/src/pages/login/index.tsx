@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 import Alert, { PropsAlert } from "../../components/alert";
 import Container from "../../components/container";
 import { useFirstLogin } from "../../hooks/useFirstLogin";
-import { Error, LoginDto, LoginResponse } from "../../service/login/login.models";
+import { Error, LoginCredentials, LoginResponse } from "../../service/login/login.models";
 
 
 const LoginPage = () => {
     useFirstLogin();
 
 
-    const [matricula, setMatricula] = useState('');
+    const [username, setUsername] = useState('');
     const [senha, setSenha] = useState('');
     const [alert, setAlert] = useState(false);
     const [message, setMessage] = useState('');
@@ -29,7 +29,7 @@ const LoginPage = () => {
     const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const payload = { matricula: matricula, password: senha } as LoginDto
+        const payload = { username: username, password: senha } as LoginCredentials
 
         handleLoginAsync(payload).then(res => {
             if (res.status === 200) {
@@ -76,47 +76,47 @@ const LoginPage = () => {
 
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const apenasNumeros = e.target.value.replace(/[^0-9]/g, "");
-        setMatricula(apenasNumeros);
-    };
-
 
     return (
-        <Container>
-            <>
-                {alert ? <Alert type={alertType} message={message} /> : ''}
-                <form onSubmit={handleLogin} className="form-content p-5 rounded">
-                    <h1 className="mb-5">Login</h1>
-                    <div className="input-group input-group-lg mb-3">
-                        <span className="input-group-text" id="visible-addon"><i className="bi bi-person-circle"></i></span>
-                        <input pattern="[0-9]+" value={matricula} onChange={handleChange} type="text" className="form-control py-3" id="floatingInput" placeholder="matricula" />
-                    </div>
-                    <div className="mb-3">
+        <div className="row">
+            <div className="col-12">
+                <div className="w-100 bg d-flex flex-column align-items-center justify-content-center"
+                    style={{
+                        height: '100vh'
+                    }}>
+                    {alert ? <Alert type={alertType} message={message} /> : ''}
+                    <form onSubmit={handleLogin} className="form-content p-5 rounded">
+                        <h1 className="mb-5">Login</h1>
                         <div className="input-group input-group-lg mb-3">
-                            <span className="input-group-text" id="visible-addon"><i className="bi bi-shield-lock-fill"></i></span>
-                            <input
-                                value={senha}
-                                onChange={(e) => setSenha(e.target.value)}
-                                type={showSenha ? "text" : "password"}
-                                className="form-control py-3"
-                                placeholder="Senha"
-                            />
-                            <button
-                                className="btn btn-light"
-                                type="button"
-                                onClick={() => setShowSenha(!showSenha)}
-                            >
-                                <i className="bi bi-eye"></i>
-                            </button>
+                            <span className="input-group-text" id="visible-addon"><i className="bi bi-person-circle"></i></span>
+                            <input value={username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control py-3" id="floatingInput" placeholder="Username" />
                         </div>
-                    </div>
-                    <div className="d-grid gap-2">
-                        <button className="btn btn-dark btn-lg">Entrar</button>
-                    </div>
-                </form>
-            </>
-        </Container>
+                        <div className="mb-3">
+                            <div className="input-group input-group-lg mb-3">
+                                <span className="input-group-text" id="visible-addon"><i className="bi bi-shield-lock-fill"></i></span>
+                                <input
+                                    value={senha}
+                                    onChange={(e) => setSenha(e.target.value)}
+                                    type={showSenha ? "text" : "password"}
+                                    className="form-control py-3"
+                                    placeholder="Senha"
+                                />
+                                <button
+                                    className="btn btn-light"
+                                    type="button"
+                                    onClick={() => setShowSenha(!showSenha)}
+                                >
+                                    <i className="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <button className="btn btn-dark btn-lg">Entrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     )
 }
 

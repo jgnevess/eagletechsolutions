@@ -100,6 +100,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
 
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -107,9 +109,10 @@ builder.Services.AddCors(options =>
         policy
             .SetIsOriginAllowed(origin => true)
             // .WithOrigins("http://localhost:3000", "http://18.222.140.8", "*")
+            .AllowAnyOrigin()
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowAnyMethod();
+        //.AllowCredentials();
     });
 });
 
