@@ -7,6 +7,8 @@ using eagletechapi.dto.usuario;
 using eagletechapi.models.usuario;
 using eagletechapi.service.interfaces;
 using System.ComponentModel.DataAnnotations;
+using eagletechapi.dto;
+using eagletechapi.entity.usuario;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -229,9 +231,27 @@ namespace eagletechapi.service.implements
             return new UserOut(usuario);
         }
 
-        public async Task<List<Usuario>> ListarTodos(int pageNumber, int pageSize)
+        public async Task<ResponseList<Usuario>> ListarTodos(int pageNumber, int pageSize)
         {
-            return await context.Usuarios.OrderBy(u => u.Matricula).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            var usuarios = await context.Usuarios.OrderBy(u => u.Matricula).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            var ativos = await context.Usuarios.Where(u => u.Ativo).CountAsync();
+            var inativos = await context.Usuarios.Where(u => !u.Ativo).CountAsync();
+            var total = await context.Usuarios.CountAsync();
+            var tecnicos = await context.Usuarios.Where(u => u.Funcao == Funcao.TECNICO).CountAsync();
+            var admins = await context.Usuarios.Where(u => u.Funcao == Funcao.ADMIN).CountAsync();
+            var solicitantes = await context.Usuarios.Where(u => u.Funcao == Funcao.SOLICITANTE).CountAsync();
+            var quantities = new Dictionary<string, int>();
+            quantities.Add("Ativo", ativos);
+            quantities.Add("Inativo", inativos);
+            quantities.Add("Total", total);
+            quantities.Add("Tecnicos", tecnicos);
+            quantities.Add("Admins", admins);
+            quantities.Add("Solicitantes", solicitantes);
+            return new ResponseList<Usuario>()
+            {
+                Quantities = quantities,
+                Data = usuarios,
+            };
         }
     }
 }

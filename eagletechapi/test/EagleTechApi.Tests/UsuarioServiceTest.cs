@@ -180,7 +180,7 @@ namespace eagletechapi.test.service
 
             var res = await service.ListarTodos(1, 1);
 
-            Assert.Empty(res);
+            Assert.Empty(res.Data);
         }
 
         [Fact]
@@ -194,7 +194,7 @@ namespace eagletechapi.test.service
 
             var res = await service.ListarTodos(1, 1);
 
-            Assert.NotEmpty(res);
+            Assert.NotEmpty(res.Data);
         }
 
         [Fact]

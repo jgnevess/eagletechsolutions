@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Error, PasswordUpdate, Response, SimplePasswordUpdate, UserUpdateIn } from "./user.models";
+import { Error, PasswordUpdate, Response, ResponseList, SimplePasswordUpdate, UserUpdateIn } from "./user.models";
 import { UserOut } from "../login/login.models";
 
 const headers = () => {
@@ -26,7 +26,7 @@ const handleMudarSenha = async (spu: SimplePasswordUpdate): Promise<Response> =>
 }
 
 const handleGetAllUsuarios = async (pageNumber: number, pageSize: number): Promise<Response> => {
-    const res = await axios.get<UserOut[]>(`${apiUrl}/Usuarios`, {
+    const res = await axios.get<ResponseList>(`${apiUrl}/Usuarios`, {
         params: {
             pageNumber: pageNumber,
             pageSize: pageSize

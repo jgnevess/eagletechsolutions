@@ -6,6 +6,9 @@ import Container from "../../components/container";
 import { useFirstLogin } from "../../hooks/useFirstLogin";
 import { Error, LoginCredentials, LoginResponse } from "../../service/login/login.models";
 
+import "./login.css"
+import logo from "../../images/logo.png"
+
 
 const LoginPage = () => {
     useFirstLogin();
@@ -78,31 +81,36 @@ const LoginPage = () => {
 
 
     return (
-        <div className="row">
+        <div className="row bg-login">
+            <div className="text-light d-flex flex-column align-items-center" style={{ width: '10vh', position: "fixed", bottom: 10, right: 40, zIndex: 1050 }}>
+                <img src={logo} className="rounded mt-2" width={70} />
+                <h6>EAGLETECH</h6>
+                <p>SOLUTIONS</p>
+            </div>
             <div className="col-12">
                 <div className="w-100 bg d-flex flex-column align-items-center justify-content-center"
                     style={{
                         height: '100vh'
                     }}>
                     {alert ? <Alert type={alertType} message={message} /> : ''}
-                    <form onSubmit={handleLogin} className="form-content p-5 rounded">
-                        <h1 className="mb-5">Login</h1>
+                    <form onSubmit={handleLogin} className="p-5 rounded">
+                        <h1 className="mb-5 fw-bold text-light">LOGIN</h1>
                         <div className="input-group input-group-lg mb-3">
-                            <span className="input-group-text" id="visible-addon"><i className="bi bi-person-circle"></i></span>
-                            <input value={username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control py-3" id="floatingInput" placeholder="Username" />
+                            <span className="input-group-text input-icon-bg" id="visible-addon"><i className="bi bi-person-circle"></i></span>
+                            <input value={username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control py-3 input-bg" id="floatingInput" placeholder="Username" />
                         </div>
                         <div className="mb-3">
                             <div className="input-group input-group-lg mb-3">
-                                <span className="input-group-text" id="visible-addon"><i className="bi bi-shield-lock-fill"></i></span>
+                                <span className="input-group-text input-icon-bg" id="visible-addon"><i className="bi bi-shield-lock-fill"></i></span>
                                 <input
                                     value={senha}
                                     onChange={(e) => setSenha(e.target.value)}
                                     type={showSenha ? "text" : "password"}
-                                    className="form-control py-3"
+                                    className="form-control py-3 input-bg"
                                     placeholder="Senha"
                                 />
                                 <button
-                                    className="btn btn-light"
+                                    className="btn btn-light input-icon-bg"
                                     type="button"
                                     onClick={() => setShowSenha(!showSenha)}
                                 >
@@ -111,7 +119,7 @@ const LoginPage = () => {
                             </div>
                         </div>
                         <div className="d-grid gap-2">
-                            <button className="btn btn-dark btn-lg">Entrar</button>
+                            <button className="btn btn-login btn-lg">Entrar</button>
                         </div>
                     </form>
                 </div>

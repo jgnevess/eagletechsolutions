@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import logo from "../../images/logo.png"
 
 interface Props {
     role: string
@@ -66,7 +67,10 @@ const Navbar = (props: Props) => {
             <div className="d-flex flex-column">
                 <Link className="navbar-brand text-light" to={
                     props.role === "ADMIN" ? '/admin' : props.role === "SOLICITANTE" ? '/sol' : '/tec'
-                }><img src="https://images.pexels.com/photos/133356/pexels-photo-133356.jpeg?_gl=1*1wipcs5*_ga*NzE3NjIyNjk5LjE3NTY1NzM3MTk.*_ga_8JE65Q40S6*czE3NTY1NzM3MTkkbzEkZzEkdDE3NTY1NzM3NDMkajM2JGwwJGgw" className="rounded" width={100} /></Link>
+                }><img src={logo} className="rounded mt-2" width={100} />
+                    <h4>EAGLETECH</h4>
+                    <p>SOLUTIONS</p>
+                </Link>
                 <div className="w-100">
                     <ul className="list-group list-group-flush mt-5">
                         {Links}

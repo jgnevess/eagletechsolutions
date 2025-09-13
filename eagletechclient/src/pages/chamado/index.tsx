@@ -138,55 +138,116 @@ const Chamado = () => {
             <>
                 {alert ? <Alert message={message} type={alertType} /> : ''}
 
-                <div className="card w-75">
-                    <div className="d-flex justify-content-between card-header">
-                        <h5>Abertura: {new Date(chamado?.abertura!).toLocaleString()}</h5>
-                        <h5>Fechamento: {chamado?.fechamento !== '0001-01-01T00:00:00' ? new Date(chamado?.fechamento!).toLocaleString() : 'n/a'}</h5>
+                <div className="container py-4">
+                    <div className="row g-4 mb-5">
+                        <div className="mb-4 col-md-4">
+                            <h6>⏰ Horários</h6>
+                            <div className="p-3 border rounded bg-white small">
+                                <div className="mb-2">
+                                    <span className="fw-bold text-primary">📌 Abertura:</span>{" "}
+                                    {new Date(chamado?.abertura!).toLocaleString()}
+                                </div>
+                                {chamado?.fechamento !== "0001-01-01T00:00:00" ?
+                                    <div>
+                                        <span className="fw-bold text-success">✅ Fechamento:</span>{" "}
+                                        {new Date(chamado?.fechamento!).toLocaleString()}
+                                    </div> : ''
+                                }
+                            </div>
+                        </div>
+                        <div className="mb-4 col-md-4">
+                            <h6 className="mb-2">👤 Solicitante</h6>
+                            <div className="p-3 border rounded bg-white small">
+                                <p className="mb-1"><b>{chamado?.solicitante.nomeCompleto}</b></p>
+                                <p className="mb-1">{chamado?.solicitante.email}</p>
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href={`https://wa.me/${chamado?.solicitante.telefone}`}
+                                    className="text-success fw-semibold"
+                                >
+                                    <i className="bi bi-whatsapp me-2"></i>
+                                    {chamado?.solicitante.telefone}
+                                </a>
+                            </div>
+                        </div>
+
+                        <div className="col-md-4">
+                            <div>
+                                <h6 className="mb-2">📊 Detalhes</h6>
+                                <ul className="list-group small">
+                                    <li className="list-group-item d-flex justify-content-between">
+                                        <span>Status</span> <span className="fw-bold">{chamado?.status}</span>
+                                    </li>
+                                    <li className="list-group-item d-flex justify-content-between">
+                                        <span>Prioridade</span> <span className="fw-bold">{chamado?.prioridade}</span>
+                                    </li>
+                                    <li className="list-group-item d-flex justify-content-between">
+                                        <span>Categoria</span> <span className="fw-bold">{chamado?.categoria}</span>
+                                    </li>
+                                    {chamado?.status !== Status.ABERTO && (
+                                        <li className="list-group-item d-flex justify-content-between">
+                                            <span>Técnico</span>{" "}
+                                            <span className="fw-bold">{chamado?.tecnico?.nomeCompleto}</span>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+
                     </div>
-                    <div className="d-flex justify-content-between card-header">
-                        <h5>Solicitante: {chamado?.solicitante.nomeCompleto}</h5>
-                        <h5>Email: {chamado?.solicitante.email}</h5>
-                        <a target="_blank" href={`https://wa.me/${chamado?.solicitante.telefone}`}><i className="bi bi-whatsapp"></i> Telefone: {chamado?.solicitante.telefone}</a>
+
+                    <div className="row g-4 mb-5">
+                        <h4 className="mb-3">📝 Descrição</h4>
+                        <div className="p-4 bg-light rounded border" style={{ minHeight: "40vh" }}>
+                            <h5 className="fw-bold mb-3">{chamado?.titulo}</h5>
+                            <p className="text-muted fs-6">{chamado?.descricao}</p>
+                        </div>
                     </div>
-                    <div className="card-body">
-                        <h1 className="card-title">Titulo: {chamado?.titulo}</h1>
-                        <div className="d-flex flex-column text-start" style={{ height: '50vh' }}>
-                            <h4 className="card-text">Descrição: </h4>
-                            <p className="card-text">{chamado?.descricao}</p>
-                        </div>
 
-                        <div className="d-flex justify-content-around card-header">
-                            <h5>Status: {chamado?.status}</h5>
-                            <h5>Prioridade: {chamado?.prioridade}</h5>
-                            <h5>Categoria: {chamado?.categoria}</h5>
-                            {chamado?.status === Status.ABERTO ? ' ' : <h5>Técnico responsavel: {chamado?.tecnico?.nomeCompleto}</h5>}
+                    <div className="d-flex justify-content-center gap-3 flex-wrap">
+                        {chamado?.status === Status.ABERTO &&
+                            sessionStorage.getItem("role") === "TECNICO" && (
+                                <button onClick={handleAceitar} className="btn btn-primary btn-lg">
+                                    Aceitar chamado
+                                </button>
+                            )}
 
-                        </div>
+                        {chamado?.status === Status.EM_ANDAMENTO &&
+                            sessionStorage.getItem("role") === "TECNICO" && (
+                                <button onClick={handleFechar} className="btn btn-success btn-lg">
+                                    Finalizar chamado
+                                </button>
+                            )}
 
-                        <div className="d-flex justify-content-around">
-                            {
-                                chamado?.status === Status.ABERTO && sessionStorage.getItem("role") === "TECNICO" ?
-                                    <button onClick={handleAceitar} className="btn btn-primary mt-2">Aceitar chamado</button> : ''
-                            }
-                            {
-                                chamado?.status === Status.EM_ANDAMENTO && sessionStorage.getItem("role") === "TECNICO" ?
-                                    <button onClick={handleFechar} className="btn btn-success mt-2">Finalizar chamado</button> : ''
-                            }
-                            {
-                                chamado?.status === Status.FECHADO && sessionStorage.getItem("role") === "TECNICO" ?
-                                    <button className="btn btn-primary disabled mt-2">Aceitar chamado</button> : ''
-                            }
-                            {
-                                chamado?.status === Status.ABERTO && sessionStorage.getItem("role") === "SOLICITANTE" ?
-                                    <button data-bs-toggle="modal" data-bs-target="#deleteModal" className="btn btn-danger mt-2">Cancelar chamado</button> : ''
-                            }
-                            {
-                                chamado?.status === Status.ABERTO && sessionStorage.getItem("role") === "SOLICITANTE" ?
-                                    <Link to={`/chamados/editar-chamado/${chamado.numeroChamado}`} className="btn btn-primary mt-2">Editar chamado</Link> : ''
-                            }
-                        </div>
+                        {chamado?.status === Status.FECHADO &&
+                            sessionStorage.getItem("role") === "TECNICO" && (
+                                <button className="btn btn-secondary btn-lg disabled">
+                                    Aceitar chamado
+                                </button>
+                            )}
+
+                        {chamado?.status === Status.ABERTO &&
+                            sessionStorage.getItem("role") === "SOLICITANTE" && (
+                                <>
+                                    <button
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        className="btn btn-danger btn-lg"
+                                    >
+                                        Cancelar chamado
+                                    </button>
+                                    <Link
+                                        to={`/chamados/editar-chamado/${chamado.numeroChamado}`}
+                                        className="btn btn-outline-primary btn-lg"
+                                    >
+                                        Editar chamado
+                                    </Link>
+                                </>
+                            )}
                     </div>
                 </div>
+
 
                 <div className="modal fade" id="deleteModal" aria-labelledby="deleteModalLabel" aria-hidden="true">
                     <div className="modal-dialog">

@@ -4,6 +4,7 @@ import { handleGetAllUsuarios, handleGetAllUsuariosByNome } from "../../service/
 import { useNavigate } from "react-router-dom";
 import InputForm from "../../components/inputForm";
 import { UserOut } from "../../service/login/login.models";
+import { ResponseList } from "../../service/user/user.models";
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState<UserOut[]>([]);
@@ -16,12 +17,13 @@ const Usuarios = () => {
     if (!hasMore) return;
 
     handleGetAllUsuarios(page, 15).then(res => {
-      const data = res.response as UserOut[];
-      if (data.length === 0) {
+      const data = res.response as ResponseList;
+      const list = data.data as UserOut[]
+      if (list.length === 0) {
         setHasMore(false);
         return;
       }
-      setUsuarios(prev => [...prev, ...data]);
+      setUsuarios(prev => [...prev, ...list]);
     })
   }, [page, hasMore]);
 
@@ -32,19 +34,21 @@ const Usuarios = () => {
     setNome(e)
     if (e === "") {
       handleGetAllUsuarios(page, 15).then(res => {
-        const data = res.response as UserOut[];
-        if (data.length === 0) {
+        const data = res.response as ResponseList;
+        const list = data.data as UserOut[]
+        if (list.length === 0) {
           setHasMore(false);
           return;
         }
-        setUsuarios(prev => [...prev, ...data]);
+        setUsuarios(prev => [...prev, ...list]);
 
       })
     }
     else {
       handleGetAllUsuariosByNome(e).then(response => {
-        const data = response.response as UserOut[]
-        setUsuarios(data)
+        const data = response.response as ResponseList
+        const list = data.data as UserOut[]
+        setUsuarios(list)
       })
     }
   }

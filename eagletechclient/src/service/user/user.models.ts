@@ -8,7 +8,21 @@ export interface SimplePasswordUpdate {
 
 export interface Response {
   status: number
-  response?: Error | UserOut | UserOut[]
+  response?: Error | UserOut | UserOut[] | ResponseList
+}
+
+export interface ResponseList {
+  quantities: Quantities
+  data: []
+}
+
+export interface Quantities {
+  Ativo: number,
+  Inativo: number,
+  Total: number
+  Tecnicos: number
+  Admins: number
+  Solicitantes: number
 }
 
 export interface Error {
