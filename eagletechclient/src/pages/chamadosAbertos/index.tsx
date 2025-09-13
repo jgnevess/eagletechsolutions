@@ -4,6 +4,7 @@ import { ChamadoDatails, handleChamadosAbertos, handleChamadosByMatricula } from
 import { useNavigate } from "react-router-dom";
 import TabelaChamados from "../../components/tabelaChamados";
 import { useFirstLogin } from "../../hooks/useFirstLogin";
+import { ResponseList } from "../../service/user/user.models";
 
 
 const ChamadosAbertos = () => {
@@ -18,8 +19,8 @@ const ChamadosAbertos = () => {
                 // navigate('/sol')
             }
             else {
-                const chamados = response.data as ChamadoDatails[]
-                setChamados(chamados);
+                const chamados = response.data as ResponseList
+                setChamados(chamados.data);
             }
         })
     }, [])

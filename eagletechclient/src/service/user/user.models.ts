@@ -17,12 +17,15 @@ export interface ResponseList {
 }
 
 export interface Quantities {
-  Ativo: number,
-  Inativo: number,
-  Total: number
-  Tecnicos: number
-  Admins: number
-  Solicitantes: number
+  Ativo?: number,
+  Inativo?: number,
+  Total?: number
+  Tecnicos?: number
+  Admins?: number
+  Solicitantes?: number
+  atendidos?: number
+  naoAtendidos?: number
+  resolvidos?: number
 }
 
 export interface Error {

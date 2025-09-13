@@ -17,6 +17,7 @@ const Navbar = (props: Props) => {
     ]
 
     const SolicitanteLinks = [
+        { nome: 'Dashboard', url: '/sol', iconClass: 'bi bi-pc-display' },
         { nome: 'Meus chamados', url: '/chamados', iconClass: 'bi bi-window-stack' },
         { nome: 'Abrir Chamado', url: '/novo-chamado', iconClass: 'bi bi-wrench' },
         { nome: 'Meus dados', url: '/about', iconClass: 'bi bi-person-vcard-fill' },
@@ -24,6 +25,7 @@ const Navbar = (props: Props) => {
     ]
 
     const TecnicoLinks = [
+        { nome: 'Dashboard', url: '/tec', iconClass: 'bi bi-pc-display' },
         { nome: 'Chamados Abertos', url: '/chamados-abertos', iconClass: 'bi bi-window-stack' },
         { nome: 'Chamados Atendidos', url: '/chamados-atendidos', iconClass: 'bi bi-window-stack' },
         { nome: 'Meus dados', url: '/about', iconClass: 'bi bi-person-vcard-fill' },

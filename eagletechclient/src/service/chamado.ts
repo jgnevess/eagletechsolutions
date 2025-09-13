@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios"
 import { Error } from "./login/login.models";
+import { ResponseList } from "./user/user.models";
 
 const headers = () => {
     return {
@@ -32,7 +33,7 @@ export interface ChamadoDatails {
 
 export interface Response {
     status: number
-    data?: ChamadoAberto | Error | ChamadoDatails[]
+    data?: ChamadoAberto | Error | ChamadoDatails[] | ResponseList
 }
 
 export interface Chamado {
@@ -147,7 +148,7 @@ const handleChamadosByMatriculaTecnico = async (matricula: number, status: strin
 
 const handleChamadosAbertos = async (): Promise<Response> => {
     try {
-        const response = await axios.get<ChamadoDatails[]>(`${apiUrl}/chamados`, {
+        const response = await axios.get<ResponseList>(`${apiUrl}/chamados`, {
             headers: headers(),
             params: {
                 status: 'ABERTO'

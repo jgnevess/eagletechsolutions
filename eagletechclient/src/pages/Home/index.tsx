@@ -42,7 +42,7 @@ const AboutUser = () => {
                 </div>
 
                 <h4 className="mb-3">📝 Detalhes do Usuário</h4>
-                <div className="p-4 bg-light rounded border" style={{ minHeight: "40vh" }}>
+                <div className="p-4 bg-light rounded border text-start" style={{ minHeight: "40vh" }}>
                     <ul className="list-unstyled fs-5">
                         <li><b>Nome completo:</b> {u.nomeCompleto}</li>
                         <li><b>Email:</b> {u.email}</li>

@@ -4,6 +4,7 @@ import { ChamadoDatails, handleChamadosByMatricula, handleChamadosByMatriculaTec
 import { useNavigate } from "react-router-dom";
 import TabelaChamados from "../../components/tabelaChamados";
 import { useFirstLogin } from "../../hooks/useFirstLogin";
+import { ResponseList } from "../../service/user/user.models";
 
 
 const ChamadosAtendidos = () => {
@@ -24,8 +25,8 @@ const ChamadosAtendidos = () => {
                 navigate('/tec')
             }
             else {
-                const chamados = response.data as ChamadoDatails[]
-                setChamados(chamados);
+                const chamados = response.data as ResponseList
+                setChamados(chamados.data);
             }
         })
     }, [status])
