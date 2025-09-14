@@ -123,8 +123,8 @@ namespace eagletechapi.test.EagleTechApi.Tests
             await service.AbrirChamado(CriarChamado(us.Entity));
             
             var res = await service.BuscarChamadosSolicitante(Status.ABERTO);
-            Assert.Single(res);
-            Assert.Equal(Status.ABERTO, res.First().Status);
+            Assert.Single(res.Data);
+            Assert.Equal(Status.ABERTO, res.Data.First().Status);
         }
         
         [Fact]
@@ -141,8 +141,8 @@ namespace eagletechapi.test.EagleTechApi.Tests
             
             var res = await service.BuscarChamadosSolicitante(1, Status.ABERTO);
             
-            Assert.Single(res);
-            Assert.Equal(Status.ABERTO, res.First().Status);
+            Assert.Single(res.Data);
+            Assert.Equal(Status.ABERTO, res.Data.First().Status);
         }
         
         [Fact]
@@ -322,30 +322,6 @@ namespace eagletechapi.test.EagleTechApi.Tests
             var service = new ChamadoService(context);
             
             await Assert.ThrowsAsync<Exception>(() => service.DeletarChamado(1));
-        }
-        
-        [Fact]
-        public async Task BuscarChamadosComStatusEUsuarioTecnicoEAberturaShouldReturnList()
-        {
-            var usuario = CriarUsuarioSolicitante();
-            var context = GetInMemoryDb();
-            var tec = CriarUsuarioTecnico();
-            var u = new Usuario(usuario);
-            var ut = new Usuario(tec);
-            var us = context.Usuarios.Add(u);
-            var tecE = context.Usuarios.Add(ut);
-            await context.SaveChangesAsync();
-            var service = new ChamadoService(context);
-
-            var res = await service.AbrirChamado(CriarChamado(us.Entity));
-
-            await service.AceitarChamado(1, tecE.Entity.Matricula);
-            
-            var resTest = await service.BuscarChamadosTecnico(tecE.Entity.Matricula, Status.EM_ANDAMENTO, res.Abertura);
-            
-            Assert.Single(resTest);
-            Assert.Equal(Status.EM_ANDAMENTO, resTest.First().Status);
-            Assert.Equal(res.Abertura, resTest.First().Abertura);
         }
     }
     

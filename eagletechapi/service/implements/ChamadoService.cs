@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using eagletechapi.Contexts;
+using eagletechapi.dto;
 using eagletechapi.dto.chamado;
 using eagletechapi.entity.chamado.enums;
 using eagletechapi.entity.usuario;
@@ -40,42 +41,72 @@ namespace eagletechapi.service.implements
 
         }
 
-        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(Status status)
+        public async Task<ResponseList<ChamadoOut>> BuscarChamadosSolicitante(Status status)
         {
-            return await context.Chamados
+            var chamados = await context.Chamados
                 .Where(c => c.Status.Equals(status))
                 .OrderBy(c => c.Prioridade)
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
+
+            var atendidos = await context.Chamados.Where(c => c.Status.Equals(Status.EM_ANDAMENTO)).CountAsync();
+            var naoAtendidos = await context.Chamados.Where(c => c.Status.Equals(Status.ABERTO)).CountAsync();
+            var resolvidos = await context.Chamados.Where(c => c.Status.Equals(Status.FECHADO)).CountAsync();
+            
+            var res = new ResponseList<ChamadoOut>
+            {
+                Data = chamados
+            };
+            res.Quantities.Add("atendidos", atendidos);
+            res.Quantities.Add("naoAtendidos", naoAtendidos);
+            res.Quantities.Add("resolvidos", resolvidos);
+
+            return res;
         }
 
-        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status)
+        public async Task<ResponseList<ChamadoOut>> BuscarChamadosSolicitante(int usuarioId, Status status)
         {
-            return await context.Chamados
+            var atendidos = await context.Chamados.Where(c => c.Status.Equals(Status.EM_ANDAMENTO) && c.Solicitante.Matricula.Equals(usuarioId)).CountAsync();
+            var naoAtendidos = await context.Chamados.Where(c => c.Status.Equals(Status.ABERTO) && c.Solicitante.Matricula.Equals(usuarioId)).CountAsync();;
+            var resolvidos = await context.Chamados.Where(c => c.Status.Equals(Status.FECHADO) && c.Solicitante.Matricula.Equals(usuarioId)).CountAsync();
+            
+            var chamados = await context.Chamados
                 .Include(c => c.Solicitante)
                 .Where(c => c.Status.Equals(status) && c.Solicitante.Matricula.Equals(usuarioId))
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
+            
+            var res = new ResponseList<ChamadoOut>
+            {
+                Data = chamados
+            };
+            res.Quantities.Add("atendidos", atendidos);
+            res.Quantities.Add("naoAtendidos", naoAtendidos);
+            res.Quantities.Add("resolvidos", resolvidos);
+
+            return res;
         }
 
-        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status)
+        public async Task<ResponseList<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status)
         {
-            return await context.Chamados
+            var atendidos = await context.Chamados.Where(c => c.Status.Equals(Status.EM_ANDAMENTO) && c.Tecnico.Matricula.Equals(usuarioId)).CountAsync();
+            var resolvidos = await context.Chamados.Where(c => c.Status.Equals(Status.FECHADO) && c.Tecnico.Matricula.Equals(usuarioId)).CountAsync();
+            
+            var chamados  = await context.Chamados
                 .Include(c => c.Solicitante)
                 .Include(c => c.Tecnico)
                 .Where(c => c.Status.Equals(status) && c.Tecnico.Matricula.Equals(usuarioId))
                 .Select(c => new ChamadoOut(c))
                 .ToListAsync();
-        }
+            
+            var res = new ResponseList<ChamadoOut>
+            {
+                Data = chamados
+            };
+            res.Quantities.Add("atendidos", atendidos);
+            res.Quantities.Add("resolvidos", resolvidos);
 
-        public async Task<IEnumerable<ChamadoOut>> BuscarChamadosTecnico(int usuarioId, Status status, DateTime abertura)
-        {
-            return await context.Chamados
-                .Include(c => c.Solicitante)
-                .Include(c => c.Tecnico)
-                .Where(c => c.Status.Equals(status) && c.Tecnico.Matricula.Equals(usuarioId) && c.Abertura.Equals(abertura))
-                .Select(c => new ChamadoOut(c))
-                .ToListAsync();
+            return res;
         }
 
         public async Task<ChamadoOut?> EditarChamado(int numeroChamado, ChamadoIn chamadoIn)
