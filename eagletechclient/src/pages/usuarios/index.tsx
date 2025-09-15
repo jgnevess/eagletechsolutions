@@ -74,7 +74,7 @@ const Usuarios = () => {
     <Container>
       <>
         <div className="d-flex flex-column justify-content-start w-100 mt-2" style={{ height: '100vh', width: '75vw', overflow: 'auto' }} onScroll={handleScroll}>
-          <InputForm inputStyle="input" id="nome" placeholder="Buscar por nome" set={(e) => handleByNome(e.target.value)} type="text" value={nome} />
+          {/* <InputForm inputStyle="input" id="nome" placeholder="Buscar por nome" set={(e) => handleByNome(e.target.value)} type="text" value={nome} /> */}
           <table className="table table-striped w-100">
             <thead>
               <tr>

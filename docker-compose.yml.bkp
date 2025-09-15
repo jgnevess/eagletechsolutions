@@ -1,4 +1,4 @@
-version: "3.8"
+# docker-compose.yml
 services:
   mariadb:
     image: mariadb:10
@@ -22,7 +22,7 @@ services:
       retries: 10
 
   backend:
-    image: jgneves/eagletechapi:latest
+    build: ./eagletechapi
     container_name: eagletechapi
     depends_on:
       mariadb:
@@ -37,7 +37,7 @@ services:
       - "5000:5000"
 
   frontend:
-    image: jgneves/eagletechclient:latest
+    build: ./eagletechclient
     container_name: eagletechclient
     depends_on:
       - backend
